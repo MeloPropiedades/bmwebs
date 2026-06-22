@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu Negocio Online en 7 Días | BM.WEBS</title>
+<meta name="description" content="Diseño web profesional para negocios en Luján. De 5 a 40+ reservas en 30 días. Consulta gratis.">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '248785544593270');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=248785544593270&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5E6D3;
+    --bg-light: #FDF8F3;
+    --bg-card: #FFFFFF;
+    --cta: #A0C08D;
+    --cta-hover: #8BAF76;
+    --cta-glow: rgba(160,192,141,0.35);
+    --headline: #8B7355;
+    --text: #2C2C2A;
+    --text-light: #6B6560;
+    --accent: #D4AF37;
+    --accent-soft: rgba(212,175,55,0.12);
+    --red-soft: #E8D0D0;
+    --red-text: #9B4D4D;
+    --green-soft: #D4E8D0;
+    --green-text: #4D7A47;
+    --border: rgba(139,115,85,0.12);
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 20px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.08);
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  /* ─── TOP BAR ─── */
+  .top-bar {
+    background: var(--text);
+    color: var(--bg);
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .top-bar span { color: var(--accent); }
+
+  /* ─── NAV ─── */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 48px;
+    background: rgba(245,230,211,0.9);
+    backdrop-filter: blur(16px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--headline);
+    text-decoration: none;
+  }
+  .nav-brand em { color: var(--accent); font-style: normal; }
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--cta);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 24px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+  }
+  .nav-cta:hover { background: var(--cta-hover); box-shadow: 0 4px 16px var(--cta-glow); }
+
+  /* ─── CONTAINER ─── */
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 72px 0 56px;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(32px, 5.5vw, 52px);
+    color: var(--headline);
+    line-height: 1.15;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 strong {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 3px;
+  }
+  .hero-sub {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .hero-sub span { color: var(--cta-hover); }
+  .hero-note {
+    font-size: 15px;
+    color: var(--text-light);
+    margin-bottom: 36px;
+  }
+  .hero-cta-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--cta);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 18px 40px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px var(--cta-glow);
+    width: 100%;
+    max-width: 400px;
+  }
+  .btn-cta:hover {
+    background: var(--cta-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px var(--cta-glow);
+  }
+  .btn-wa {
+    background: #25D366;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+  }
+  .btn-wa:hover {
+    background: #1EBE5A;
+    box-shadow: 0 8px 30px rgba(37,211,102,0.4);
+  }
+  .btn-sub {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+
+  /* ─── SECTION SHARED ─── */
+  .section {
+    padding: 64px 0;
+  }
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .section-tag::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: clamp(24px, 4vw, 36px);
+    color: var(--headline);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .section-desc {
+    font-size: 16px;
+    color: var(--text-light);
+    margin-bottom: 36px;
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  /* ─── PROBLEM ─── */
+  .problem-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 40px 36px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .problem-tag { color: var(--red-text); }
+  .problem-tag::before { background: var(--red-text); }
+  .problem-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .problem-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .problem-list li .icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--red-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-top: 1px;
+  }
+  .problem-list li strong { color: var(--text); }
+  .problem-list li span { color: var(--text-light); }
+  .problem-bottom {
+    background: var(--red-soft);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--red-text);
+    text-align: center;
+  }
+
+  /* ─── SOLUTION ─── */
+  .solution-card {
+    background: var(--text);
+    border-radius: var(--radius);
+    padding: 40px 36px;
+    box-shadow: var(--shadow-lg);
+    color: #fff;
+  }
+  .solution-tag { color: var(--cta); }
+  .solution-tag::before { background: var(--cta); }
+  .solution-title { color: #fff; }
+  .solution-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .solution-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.8);
+  }
+  .solution-list li .icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(160,192,141,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-top: 1px;
+  }
+  .solution-list li strong { color: #fff; }
+  .solution-bottom {
+    background: rgba(160,192,141,0.15);
+    border: 1px solid rgba(160,192,141,0.25);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--cta);
+    text-align: center;
+  }
+
+  /* ─── RESULTS ─── */
+  .results-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+  .result-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .result-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--headline);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .result-card h4::before {
+    content: '📊';
+    font-size: 18px;
+  }
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .label { color: var(--text-light); }
+  .result-row .value { font-weight: 700; color: var(--text); }
+  .result-row .value.highlight { color: var(--green-text); font-size: 16px; }
+  .result-quote {
+    background: var(--accent-soft);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--headline);
+    text-align: center;
+    border-left: 4px solid var(--accent);
+  }
+
+  /* ─── TESTIMONIALS ─── */
+  .testimonials-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .testimonial-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 28px 28px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .testimonial-stars {
+    color: var(--accent);
+    font-size: 16px;
+    margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+  .testimonial-text {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+  .testimonial-author {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--headline);
+  }
+  .testimonial-role {
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  .testimonials-badge {
+    text-align: center;
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--accent-soft);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--headline);
+  }
+  .testimonials-badge span { color: var(--accent); }
+
+  /* ─── CTA SECTION ─── */
+  .cta-section {
+    padding: 64px 0;
+    text-align: center;
+  }
+  .cta-card {
+    background: linear-gradient(135deg, var(--text) 0%, #3D3530 100%);
+    border-radius: var(--radius);
+    padding: 56px 40px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-card::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -15%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .cta-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 700;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-card .urgency {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(212,175,55,0.2);
+    border: 1px solid rgba(212,175,55,0.3);
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: 100px;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-card .cta-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── FORM ─── */
+  .form-section {
+    padding: 64px 0 80px;
+  }
+  .form-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 44px 40px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+  }
+  .form-card .section-title { text-align: center; }
+  .form-card .section-desc { text-align: center; margin: 0 auto 36px; }
+  .form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--headline);
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: var(--cta);
+    box-shadow: 0 0 0 4px var(--cta-glow);
+  }
+  .form-group input::placeholder { color: #B0A89E; }
+  .form-group select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238B7355' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L2 5h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+  .form-submit {
+    width: 100%;
+    padding: 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--cta);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 20px var(--cta-glow);
+  }
+  .form-submit:hover {
+    background: var(--cta-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 30px var(--cta-glow);
+  }
+  .form-trust {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .form-trust span {
+    font-size: 13px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* ─── FOOTER ─── */
+  .lp-footer {
+    text-align: center;
+    padding: 28px 24px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--text-light);
+  }
+  .lp-footer a { color: var(--headline); text-decoration: none; font-weight: 600; }
+  .lp-footer a:hover { color: var(--accent); }
+
+  /* ─── WHATSAPP FLOAT ─── */
+  .wa-float {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 58px;
+    height: 58px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    z-index: 999;
+    transition: transform 0.3s ease;
+    animation: wa-pulse 2s ease-in-out infinite;
+  }
+  .wa-float:hover { transform: scale(1.1); }
+  .wa-float svg { width: 30px; height: 30px; fill: #fff; }
+  @keyframes wa-pulse {
+    0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); }
+    50% { box-shadow: 0 4px 28px rgba(37,211,102,0.65); }
+  }
+
+  /* ─── FADE ANIMATIONS ─── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .nav { padding: 14px 20px; }
+    .hero { padding: 48px 0 40px; }
+    .section { padding: 48px 0; }
+    .problem-card, .solution-card { padding: 28px 22px; }
+    .results-grid { grid-template-columns: 1fr; }
+    .form-card { padding: 28px 22px; }
+    .form-trust { flex-direction: column; align-items: center; gap: 8px; }
+    .cta-card { padding: 40px 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wa-float { animation: none; }
+    .fade-up { opacity: 1; transform: none; }
+    * { transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  🔥 Consulta gratis — Válida solo esta semana
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="nav-brand">BM<em>.</em>WEBS</a>
+  <a href="#formulario" class="nav-cta">Consulta Gratis →</a>
+</nav>
+
+<!-- HERO -->
+<div class="container">
+<section class="hero fade-up">
+  <div class="hero-eyebrow">⭐ +10 negocios ya confían en nosotros</div>
+  <h1>¿Tu negocio sigue sin <strong>reservas online</strong>?</h1>
+  <p class="hero-sub">De 5 a <span>+25 reservas</span> en 30 días</p>
+  <p class="hero-note">Mientras vos dormís, tus clientes reservan. Diseño web profesional para negocios en Luján y alrededores.</p>
+  <div class="hero-cta-group">
+    <a href="#formulario" class="btn-cta">Agendar Consulta Gratis</a>
+    <a href="https://wa.me/542323528908?text=Hola%21%20Vi%20la%20publicidad%20y%20quiero%20una%20web%20para%20mi%20negocio" target="_blank" rel="noopener" class="btn-cta btn-wa">
+      <svg width="20" height="20" viewBox="0 0 32 32" fill="white"><path d="M16.01 2.667A13.29 13.29 0 0 0 2.72 15.957a13.21 13.21 0 0 0 1.78 6.627L2.667 29.333l6.973-1.83A13.27 13.27 0 0 0 16.01 29.29c7.35 0 13.32-5.97 13.32-13.32S23.36 2.667 16.01 2.667Zm0 24.36a11.01 11.01 0 0 1-5.61-1.53l-.4-.24-4.16 1.09 1.11-4.06-.26-.42a10.99 10.99 0 0 1-1.69-5.87c0-6.08 4.95-11.03 11.03-11.03 6.08 0 11.02 4.95 11.02 11.03 0 6.08-4.95 11.03-11.03 11.03Zm6.05-8.26c-.33-.17-1.96-.97-2.27-1.08-.3-.11-.53-.17-.75.17-.22.33-.86 1.08-1.06 1.3-.19.22-.39.25-.72.08-.33-.17-1.4-.52-2.67-1.65-.99-.88-1.65-1.96-1.85-2.3-.19-.33-.02-.51.15-.68.15-.15.33-.39.5-.59.17-.19.22-.33.33-.56.11-.22.06-.42-.03-.59-.08-.17-.75-1.81-1.03-2.48-.27-.65-.55-.56-.75-.57h-.64c-.22 0-.59.08-.89.42-.3.33-1.17 1.14-1.17 2.78s1.2 3.23 1.36 3.45c.17.22 2.36 3.6 5.72 5.05.8.35 1.42.55 1.9.71.8.25 1.53.22 2.1.13.64-.1 1.96-.8 2.24-1.58.28-.77.28-1.44.19-1.58-.08-.14-.3-.22-.64-.39Z"/></svg>
+      Hablar por WhatsApp Ahora
+    </a>
+    <span class="btn-sub">Sin compromiso · Respuesta en menos de 2 horas</span>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="section fade-up">
+  <div class="problem-card">
+    <div class="section-tag problem-tag">El Problema</div>
+    <h2 class="section-title">¿Cómo estaban ANTES?</h2>
+    <p class="section-desc">Así se sienten la mayoría de los negocios sin presencia online...</p>
+    <ul class="problem-list">
+      <li>
+        <div class="icon">❌</div>
+        <div><strong>Teléfono sonando sin parar.</strong> <span>Interrupciones constantes, no podés atender mientras trabajás.</span></div>
+      </li>
+      <li>
+        <div class="icon">❌</div>
+        <div><strong>Clientes que llaman y no contestan.</strong> <span>Pierden el interés y reservan en otro lado.</span></div>
+      </li>
+      <li>
+        <div class="icon">❌</div>
+        <div><strong>Cuaderno de citas desorganizado.</strong> <span>Turnos duplicados, errores, cancelaciones de último momento.</span></div>
+      </li>
+      <li>
+        <div class="icon">❌</div>
+        <div><strong>La competencia con web te gana clientes.</strong> <span>Se ven más profesionales y generan más confianza.</span></div>
+      </li>
+      <li>
+        <div class="icon">❌</div>
+        <div><strong>Un techo de clientes que no podés superar.</strong> <span>Sin crecer, mes a mes igual.</span></div>
+      </li>
+    </ul>
+    <div class="problem-bottom">
+      💸 Cada cliente que se va es dinero que no ganás
+    </div>
+  </div>
+</section>
+
+<!-- SOLUCIÓN -->
+<section class="section fade-up">
+  <div class="solution-card">
+    <div class="section-tag solution-tag">La Solución</div>
+    <h2 class="section-title solution-title">Con tu Sitio Web Profesional...</h2>
+    <p style="color:rgba(255,255,255,0.6);margin-bottom:28px;font-size:16px;">Todo cambia cuando tu negocio trabaja para vos 24/7</p>
+    <ul class="solution-list">
+      <li>
+        <div class="icon">✅</div>
+        <div><strong>Clientes reservan 24/7</strong> — mientras dormís, tu web trabaja.</div>
+      </li>
+      <li>
+        <div class="icon">✅</div>
+        <div><strong>Recordatorios automáticos</strong> — menos cancelaciones, más ingresos.</div>
+      </li>
+      <li>
+        <div class="icon">✅</div>
+        <div><strong>Catálogo de servicios + precios online</strong> — tus clientes se informan solos.</div>
+      </li>
+      <li>
+        <div class="icon">✅</div>
+        <div><strong>Google Maps + WhatsApp integrado</strong> — te encuentran y contactan fácil.</div>
+      </li>
+      <li>
+        <div class="icon">✅</div>
+        <div><strong>Imagen profesional que genera confianza</strong> — tu marca, tus reglas.</div>
+      </li>
+    </ul>
+    <div class="solution-bottom">
+      📈 +30% ganancias en el primer mes
+    </div>
+  </div>
+</section>
+
+<!-- RESULTADOS -->
+<section class="section fade-up">
+  <div class="section-tag" style="color:var(--accent);">
+    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:6px;"></span>
+    Resultados Reales
+  </div>
+  <h2 class="section-title">Números que hablan solos</h2>
+  <p class="section-desc">Estos son resultados reales de negocios que confiaron en nosotros.</p>
+
+  <div class="results-grid">
+    <div class="result-card">
+      <h4>Salón en Luján (2 meses)</h4>
+      <div class="result-row"><span class="label">Antes</span><span class="value">5-8 clientes/semana</span></div>
+      <div class="result-row"><span class="label">Después</span><span class="value highlight">25-30 clientes/semana</span></div>
+      <div class="result-row"><span class="label">Ganancias</span><span class="value highlight">+30%/mes</span></div>
+    </div>
+    <div class="result-card">
+      <h4>Spa en zona centro (3 meses)</h4>
+      <div class="result-row"><span class="label">Reservas online</span><span class="value highlight">35+/semana</span></div>
+      <div class="result-row"><span class="label">Cancelaciones</span><span class="value highlight">-50%</span></div>
+      <div class="result-row"><span class="label">Clientes nuevos</span><span class="value highlight">+150%</span></div>
+    </div>
+  </div>
+
+  <div class="result-quote">
+    "Lo mejor: mientras trabajo, mi sitio trabaja por mí"
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section class="section fade-up">
+  <div class="section-tag" style="color:var(--accent);">
+    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:6px;"></span>
+    Testimonios
+  </div>
+  <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+  <p class="section-desc">Negocios reales, resultados reales.</p>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Cambió mi negocio. Pasé de tener 5 citas a 40+ por mes. No puedo creer que no lo hice antes."</p>
+      <div class="testimonial-author">María</div>
+      <div class="testimonial-role">Salón de Belleza — Luján</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Mi teléfono no deja de sonar. Los clientes me encuentran solos por Google. La mejor inversión."</p>
+      <div class="testimonial-author">Paula</div>
+      <div class="testimonial-role">Spa & Masajes — La Plata</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"ROI en 1 mes. Se pagó sola la web. Ahora tengo lista de espera."</p>
+      <div class="testimonial-author">Gabriela</div>
+      <div class="testimonial-role">Centro de Estética — Junín</div>
+    </div>
+  </div>
+
+  <div class="testimonials-badge">
+    <span>⭐ 4.9/5</span> — 23 opiniones verificadas
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section fade-up">
+  <div class="cta-card">
+    <h2>¿Listo para +25 Reservas/Mes?</h2>
+    <div class="urgency">⏰ Consulta gratis — Válida solo esta semana</div>
+    <div class="cta-buttons">
+      <a href="#formulario" class="btn-cta" style="background:#fff;color:var(--text);box-shadow:0 4px 20px rgba(0,0,0,0.15);">Agendar Consulta Gratis →</a>
+      <a href="https://wa.me/542323528908?text=Hola%21%20Vi%20la%20publicidad%20y%20quiero%20una%20web%20para%20mi%20negocio" target="_blank" rel="noopener" class="btn-cta btn-wa">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="white"><path d="M16.01 2.667A13.29 13.29 0 0 0 2.72 15.957a13.21 13.21 0 0 0 1.78 6.627L2.667 29.333l6.973-1.83A13.27 13.27 0 0 0 16.01 29.29c7.35 0 13.32-5.97 13.32-13.32S23.36 2.667 16.01 2.667Zm0 24.36a11.01 11.01 0 0 1-5.61-1.53l-.4-.24-4.16 1.09 1.11-4.06-.26-.42a10.99 10.99 0 0 1-1.69-5.87c0-6.08 4.95-11.03 11.03-11.03 6.08 0 11.02 4.95 11.02 11.03 0 6.08-4.95 11.03-11.03 11.03Zm6.05-8.26c-.33-.17-1.96-.97-2.27-1.08-.3-.11-.53-.17-.75.17-.22.33-.86 1.08-1.06 1.3-.19.22-.39.25-.72.08-.33-.17-1.4-.52-2.67-1.65-.99-.88-1.65-1.96-1.85-2.3-.19-.33-.02-.51.15-.68.15-.15.33-.39.5-.59.17-.19.22-.33.33-.56.11-.22.06-.42-.03-.59-.08-.17-.75-1.81-1.03-2.48-.27-.65-.55-.56-.75-.57h-.64c-.22 0-.59.08-.89.42-.3.33-1.17 1.14-1.17 2.78s1.2 3.23 1.36 3.45c.17.22 2.36 3.6 5.72 5.05.8.35 1.42.55 1.9.71.8.25 1.53.22 2.1.13.64-.1 1.96-.8 2.24-1.58.28-.77.28-1.44.19-1.58-.08-.14-.3-.22-.64-.39Z"/></svg>
+        Hablar por WhatsApp Ahora
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULARIO -->
+<section class="form-section fade-up" id="formulario">
+  <div class="form-card">
+    <h2 class="section-title">Reservá tu Consulta Gratis</h2>
+    <p class="section-desc">Completá el formulario y te contactamos en menos de 2 horas para agendar tu consulta de 15 minutos.</p>
+
+    <form id="contactForm" action="https://formspree.io/f/xbdvjyyl" method="POST" onsubmit="return enviarFormulario(event)">
+      <div class="form-group">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Ej: María López" required>
+      </div>
+      <div class="form-group">
+        <label for="telefono">Teléfono (WhatsApp)</label>
+        <input type="tel" id="telefono" name="telefono" placeholder="Ej: 2323 52-8908" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" placeholder="Ej: maria@gmail.com" required>
+      </div>
+      <div class="form-group">
+        <label for="citas">¿Cuántas citas/semana tenés hoy?</label>
+        <select id="citas" name="citas" required>
+          <option value="" disabled selected>Seleccionar...</option>
+          <option value="0-5">0 a 5 por semana</option>
+          <option value="5-10">5 a 10 por semana</option>
+          <option value="10-20">10 a 20 por semana</option>
+          <option value="20+">Más de 20 por semana</option>
+        </select>
+      </div>
+
+      <button type="submit" class="form-submit">Reservar Consulta Gratis →</button>
+
+      <div class="form-trust">
+        <span>✓ Sin compromiso</span>
+        <span>✓ Respuesta en 2 horas</span>
+        <span>✓ Consulta de 15 min gratis</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer class="lp-footer">
+  © 2026 <a href="#">BM.WEBS</a> — Diseño Web Profesional · Luján, Buenos Aires
+</footer>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/542323528908?text=Hola%21%20Vi%20la%20publicidad%20y%20quiero%20una%20web%20para%20mi%20negocio" target="_blank" rel="noopener" class="wa-float" aria-label="WhatsApp">
+  <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16.01 2.667A13.29 13.29 0 0 0 2.72 15.957a13.21 13.21 0 0 0 1.78 6.627L2.667 29.333l6.973-1.83A13.27 13.27 0 0 0 16.01 29.29c7.35 0 13.32-5.97 13.32-13.32S23.36 2.667 16.01 2.667Zm0 24.36a11.01 11.01 0 0 1-5.61-1.53l-.4-.24-4.16 1.09 1.11-4.06-.26-.42a10.99 10.99 0 0 1-1.69-5.87c0-6.08 4.95-11.03 11.03-11.03 6.08 0 11.02 4.95 11.02 11.03 0 6.08-4.95 11.03-11.03 11.03Zm6.05-8.26c-.33-.17-1.96-.97-2.27-1.08-.3-.11-.53-.17-.75.17-.22.33-.86 1.08-1.06 1.3-.19.22-.39.25-.72.08-.33-.17-1.4-.52-2.67-1.65-.99-.88-1.65-1.96-1.85-2.3-.19-.33-.02-.51.15-.68.15-.15.33-.39.5-.59.17-.19.22-.33.33-.56.11-.22.06-.42-.03-.59-.08-.17-.75-1.81-1.03-2.48-.27-.65-.55-.56-.75-.57h-.64c-.22 0-.59.08-.89.42-.3.33-1.17 1.14-1.17 2.78s1.2 3.23 1.36 3.45c.17.22 2.36 3.6 5.72 5.05.8.35 1.42.55 1.9.71.8.25 1.53.22 2.1.13.64-.1 1.96-.8 2.24-1.58.28-.77.28-1.44.19-1.58-.08-.14-.3-.22-.64-.39Z"/></svg>
+</a>
+
+<!-- Form handler: Formspree + WhatsApp redirect -->
+<script>
+function enviarFormulario(event) {
+  const nombre = document.getElementById('nombre').value.trim();
+  const telefono = document.getElementById('telefono').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const citas = document.getElementById('citas').value;
+
+  if (!nombre || !telefono || !email || !citas) {
+    alert('Por favor completá todos los campos.');
+    return false;
+  }
+
+  // Fire Meta Pixel Lead event
+  if (typeof fbq !== 'undefined') {
+    fbq('track', 'Lead', {
+      content_name: 'Consulta Negocios',
+      content_category: 'landing_negocios'
+    });
+  }
+
+  // Send to WhatsApp after form submission
+  setTimeout(() => {
+    const msg = encodeURIComponent(
+      `¡Hola! Quiero mi consulta gratis 🚀\n\n` +
+      `👤 Nombre: ${nombre}\n` +
+      `📱 Teléfono: ${telefono}\n` +
+      `📧 Email: ${email}\n` +
+      `📊 Citas/semana: ${citas}\n\n` +
+      `Vi la publicidad de BM.WEBS y quiero más info.`
+    );
+    window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
+  }, 1000);
+
+  // Allow form to submit to Formspree
+  return true;
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
