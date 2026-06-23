@@ -27,18 +27,18 @@ src="https://www.facebook.com/tr?id=248785544593270&ev=PageView&noscript=1"
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #F5E6D3;
-  --bg-light: #FDF8F3;
+  --bg: #FAF7F2;
+  --bg-light: #EEF2FF;
   --bg-card: #FFFFFF;
-  --cta: #8B7355;
-  --cta-hover: #6B5344;
-  --cta-glow: rgba(139,115,85,0.25);
-  --headline: #8B7355;
-  --text: #2C2C2A;
-  --text-light: #6B5D54;
-  --accent: #D4AF37;
-  --accent-soft: rgba(212,175,55,0.12);
-  --border: rgba(139,115,85,0.12);
+  --cta: #2B59FF;
+  --cta-hover: #1A3FCC;
+  --cta-glow: rgba(43,89,255,0.12);
+  --headline: #111111;
+  --text: #111111;
+  --text-light: #555555;
+  --accent: #2B59FF;
+  --accent-soft: rgba(43,89,255,0.12);
+  --border: rgba(0,0,0,0.06);
   --radius: 16px;
   --radius-sm: 10px;
   --shadow: 0 2px 20px rgba(0,0,0,0.06);
@@ -679,7 +679,7 @@ body {
 
 <section class="hero fade-up">
   <div class="hero-eyebrow">🔧 Para electricistas, plomeros, cerrajeros y oficios</div>
-  <h1>Necesito un Electricista URGENTE!!!<br>La gente Googlea por el servicio en tu ciudad... ¿<strong>Dónde apareces vos</strong>?</h1>
+  <h1><span style="color:#2B59FF;">Necesito un Electricista URGENTE!!!</span><br>La gente Googlea por el servicio en tu ciudad... ¿<strong>Dónde apareces vos</strong>?</h1>
   <p class="hero-sub">De 15 a <span>35+ trabajos/mes</span></p>
   <p class="hero-note">Clientes en tu ciudad buscan en Google AHORA. Tu competencia aparece primero. ¿Qué tal si fueras TÚ?</p>
   <div class="hero-cta-group">
@@ -721,7 +721,7 @@ body {
 
 <section class="section fade-up">
   <div class="solution-card">
-    <div class="section-tag" style="color:var(--accent);">La Solución</div>
+    <div class="section-tag" style="color:#FFFFFF;">La Solución</div>
     <h2 class="section-title solution-title">Aparecer PRIMERO en Google = Clientes Constantes</h2>
     <p style="color:rgba(255,255,255,0.6);margin-bottom:28px;font-size:16px;">Los clientes que buscan tu servicio YA quieren comprar...</p>
 
@@ -732,7 +732,7 @@ body {
       <li><div class="icon">✅</div><div><strong>Disponibilidad 24/7</strong> — "Llamar ahora" botón siempre visible.</div></li>
     </ul>
 
-    <div class="solution-bottom">
+    <div class="solution-bottom" style="color:#FFFFFF;">
       🎯 No busques clientes. Que ellos te busquen a ti.
     </div>
   </div>
@@ -809,7 +809,7 @@ body {
 <section class="cta-section fade-up">
   <div class="cta-card">
     <h2>Tu Teléfono PODRÍA Sonar Constantemente</h2>
-    <div class="urgency">⏰ Análisis gratis: ¿Cuántos clientes pierdes cada mes?</div>
+    <div class="urgency" style="color:#FFFFFF;">⏰ Análisis gratis: ¿Cuántos clientes pierdes cada mes?</div>
 
     <div class="cta-buttons">
       <a href="#formulario" class="btn-cta" style="background:#fff;color:var(--cta);box-shadow:0 4px 20px rgba(0,0,0,0.15);">Obtener Análisis Gratuito →</a>
@@ -830,7 +830,7 @@ body {
     <h2 class="section-title">Solicita tu Análisis Gratuito</h2>
     <p class="section-desc">Completá el formulario y recibirás información sobre tu zona en 24 horas.</p>
 
-    <form id="contactForm" action="https://formspree.io/f/xbdvjyyl" method="POST" onsubmit="return enviarFormulario(event)">
+    <form id="contactForm" onsubmit="return enviarFormulario(event)">
       <div class="form-fields">
         <div class="form-group">
           <label for="nombre">Nombre</label>
@@ -890,38 +890,63 @@ body {
 
 <script>
 function enviarFormulario(event) {
+  event.preventDefault();
+  
   const nombre = document.getElementById('nombre').value.trim();
   const profesion = document.getElementById('profesion').value;
+  const trabajos = document.getElementById('trabajos').value;
   const telefono = document.getElementById('telefono').value.trim();
   const email = document.getElementById('email').value.trim();
-  const trabajos = document.getElementById('trabajos').value;
 
-  if (!nombre || !profesion || !telefono || !email || !trabajos) {
+  if (!nombre || !profesion || !trabajos || !telefono || !email) {
     alert('Por favor completá todos los campos.');
     return false;
   }
 
-  if (typeof fbq !== 'undefined') {
-    fbq('track', 'Lead', {
-      content_name: 'Análisis Servicios Locales',
-      content_category: 'landing_servicios_locales'
-    });
-  }
+  // 1. Enviar a Formspree
+  const formData = new FormData();
+  formData.append('nombre', nombre);
+  formData.append('profesion', profesion);
+  formData.append('trabajos', trabajos);
+  formData.append('telefono', telefono);
+  formData.append('email', email);
 
-  setTimeout(() => {
-    const msg = encodeURIComponent(
-      `¡Hola! Quiero mi análisis gratuito 🔧\n\n` +
-      `👤 Nombre: ${nombre}\n` +
-      `💼 Profesión: ${profesion}\n` +
-      `📱 Teléfono: ${telefono}\n` +
-      `📧 Email: ${email}\n` +
-      `📊 Trabajos/mes: ${trabajos}\n\n` +
-      `Vi la publicidad de BM.WEBS y quiero saber cuántos clientes pierdo.`
-    );
-    window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
-  }, 1000);
+  fetch('https://formspree.io/f/xbdvjyyl', {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok) {
+      // 2. Formspree OK → Dispara pixel de Lead
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'Lead', {
+          content_name: 'Análisis Servicios Locales',
+          content_category: 'landing_servicios_locales',
+          value: nombre,
+          currency: 'ARS'
+        });
+      }
 
-  return true;
+      // 3. Espera 1s y abre WhatsApp con mensaje corto
+      setTimeout(() => {
+        const msg = encodeURIComponent(
+          `Hola, quiero análisis para mi negocio 🔧\n\n` +
+          `${nombre} - ${profesion}\n` +
+          `${trabajos} trabajos/mes`
+        );
+        window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
+      }, 1000);
+    } else {
+      alert('Error al enviar. Intenta de nuevo.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error de conexión. Intenta de nuevo.');
+  });
+
+  return false;
 }
 
 const observer = new IntersectionObserver((entries) => {
