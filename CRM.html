@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Melopropiedades · CRM</title>
+
+  <!-- Tailwind CSS por CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Configuración de la paleta de marca y tipografía
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#0F172A',      // Azul tinta para la navegación
+            primary: '#4F46E5',  // Indigo de acciones principales
+            frio: '#3B82F6',     // Azul → clientes fríos
+            tibio: '#F59E0B',    // Ámbar → clientes tibios
+            caliente: '#F43F5E', // Rosa fuerte → clientes calientes
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Scrollbar discreta para el tablero Kanban en desktop */
+    .scroll-thin::-webkit-scrollbar { height: 8px; width: 8px; }
+    .scroll-thin::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    .scroll-thin::-webkit-scrollbar-track { background: transparent; }
+    /* Transición suave al cambiar de pestaña */
+    .vista { animation: aparecer .25s ease; }
+    @keyframes aparecer { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-ink font-sans antialiased min-h-screen">
+
+  <!-- ============================================================= -->
+  <!-- PANTALLA DE LOGIN · acceso obligatorio por email aprobado      -->
+  <!-- ============================================================= -->
+  <div id="pantallaLogin" class="fixed inset-0 z-50 bg-ink grid place-items-center px-4">
+    <div class="w-full max-w-sm">
+      <!-- Marca -->
+      <div class="flex items-center gap-2.5 justify-center mb-6">
+        <div class="w-9 h-9 rounded-lg bg-primary grid place-items-center font-extrabold text-white">M</div>
+        <div class="leading-tight text-white">
+          <p class="font-bold text-base tracking-tight">Melopropiedades</p>
+          <p class="text-[11px] text-slate-400">CRM Inmobiliario · Acceso privado</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-xl">
+        <h1 class="font-bold text-lg mb-1">Ingresar</h1>
+        <p class="text-xs text-slate-500 mb-5">El acceso es solo para cuentas aprobadas por el equipo.</p>
+
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs font-medium text-slate-600">Email</label>
+            <input id="loginEmail" type="email" autocomplete="username" placeholder="tu@email.com"
+              class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none" />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-600">Contraseña</label>
+            <input id="loginClave" type="password" autocomplete="current-password" placeholder="••••••••"
+              class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none" />
+          </div>
+          <button onclick="intentarLogin()"
+            class="w-full bg-primary hover:bg-indigo-700 text-white font-semibold text-sm rounded-lg py-2.5 transition-colors">
+            Entrar
+          </button>
+          <p id="loginError" class="text-xs text-caliente text-center min-h-[16px]"></p>
+        </div>
+      </div>
+
+      <p class="text-center text-[11px] text-slate-500 mt-4">
+        ¿No tenés acceso? Pedí tu alta al equipo de Melopropiedades.
+      </p>
+    </div>
+  </div>
+
+  <!-- Contenedor de la app (oculto hasta iniciar sesión) -->
+  <div id="app" class="hidden">
+
+  <!-- ============================================================= -->
+  <!-- BARRA SUPERIOR + NAVEGACIÓN POR PESTAÑAS                       -->
+  <!-- ============================================================= -->
+  <header class="sticky top-0 z-30 bg-ink text-white shadow-sm">
+    <div class="max-w-6xl mx-auto px-4">
+      <!-- Marca -->
+      <div class="flex items-center justify-between py-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-primary grid place-items-center font-extrabold text-sm">M</div>
+          <div class="leading-tight">
+            <p class="font-bold text-sm tracking-tight">Melopropiedades</p>
+            <p class="text-[11px] text-slate-400">CRM Inmobiliario · Luján</p>
+          </div>
+        </div>
+        <!-- Sesión activa + salir -->
+        <div class="flex items-center gap-3">
+          <span id="sesionEmailLabel" class="text-[11px] text-slate-400 hidden sm:inline"></span>
+          <button onclick="cerrarSesion()"
+            class="text-[11px] font-semibold text-slate-300 hover:text-white border border-white/20 hover:border-white/40 rounded-lg px-2.5 py-1 transition-colors">
+            Salir
+          </button>
+        </div>
+      </div>
+
+      <!-- Pestañas -->
+      <nav class="flex gap-1 -mb-px">
+        <button data-tab="panel"
+          class="tab-btn flex-1 sm:flex-none px-4 py-3 text-sm font-semibold border-b-2 transition-colors">
+          Panel General
+        </button>
+        <button data-tab="leads"
+          class="tab-btn flex-1 sm:flex-none px-4 py-3 text-sm font-semibold border-b-2 transition-colors">
+          /Leads
+          <span id="contadorLeads" class="ml-1.5 text-[11px] bg-white/15 px-1.5 py-0.5 rounded-full">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+
+    <!-- ============================================================= -->
+    <!-- VISTA 1 · PANEL GENERAL (Propiedades + Motor de cruces)        -->
+    <!-- ============================================================= -->
+    <section id="vista-panel" class="vista">
+
+      <!-- ========================================================= -->
+      <!-- CONEXIÓN CON WASI · importa tu cartera real               -->
+      <!-- ========================================================= -->
+      <div class="bg-white rounded-2xl border border-slate-200 mb-6 overflow-hidden">
+        <!-- Cabecera plegable -->
+        <button onclick="togglePanelWasi()"
+          class="w-full flex items-center justify-between px-5 py-3.5 text-left">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-[#194c9a] grid place-items-center text-white text-xs font-bold">W</div>
+            <div>
+              <p class="font-bold text-sm">Conexión con WASI</p>
+              <p id="wasiEstado" class="text-[11px] text-slate-400">Sin conectar</p>
+            </div>
+          </div>
+          <span id="flechaWasi" class="text-slate-400 text-xs">▼</span>
+        </button>
+
+        <!-- Cuerpo del panel -->
+        <div id="cuerpoWasi" class="hidden px-5 pb-5 border-t border-slate-100 pt-4">
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs font-medium text-slate-600">ID de compañía (id_company)</label>
+              <input id="wasiCompany" placeholder="Ej: 12345"
+                class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" />
+            </div>
+            <div>
+              <label class="text-xs font-medium text-slate-600">Token (wasi_token)</label>
+              <input id="wasiToken" type="password" placeholder="Tu token de la API"
+                class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 mt-4">
+            <button onclick="guardarCredencialesWasi()"
+              class="text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg px-4 py-2 transition-colors">
+              Guardar credenciales
+            </button>
+            <button onclick="importarDesdeWasi()" id="btnImportarWasi"
+              class="text-sm font-semibold text-white bg-[#194c9a] hover:bg-[#143d7a] rounded-lg px-4 py-2 transition-colors">
+              Importar propiedades de WASI
+            </button>
+          </div>
+
+          <!-- Mensajes de resultado / error -->
+          <div id="wasiMensaje" class="mt-3 text-xs"></div>
+
+          <!-- Fallback manual: pegar el JSON si el navegador bloquea la llamada (CORS) -->
+          <details class="mt-4">
+            <summary class="text-xs text-slate-500 cursor-pointer hover:text-slate-700">
+              ¿La importación falla por CORS? Pegá el JSON manualmente
+            </summary>
+            <p class="text-[11px] text-slate-400 mt-2 mb-1">
+              Abrí en otra pestaña <code class="bg-slate-100 px-1 rounded">api.wasi.co/v1/property/search?id_company=...&amp;wasi_token=...</code>,
+              copiá la respuesta y pegala acá.
+            </p>
+            <textarea id="wasiJsonManual" rows="4" placeholder='{ "total": 2, "0": { ... } }'
+              class="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs font-mono focus:ring-2 focus:ring-primary outline-none"></textarea>
+            <button onclick="importarJsonManual()"
+              class="mt-2 text-xs font-semibold text-white bg-slate-700 hover:bg-slate-800 rounded-lg px-3 py-1.5 transition-colors">
+              Procesar JSON pegado
+            </button>
+          </details>
+        </div>
+      </div>
+
+      <!-- Aviso de cruces inteligentes -->
+      <div id="zonaCruces" class="mb-6"></div>
+
+      <div class="grid lg:grid-cols-5 gap-6">
+
+        <!-- Formulario de propiedad -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-2xl border border-slate-200 p-5 sticky top-32">
+            <h2 class="font-bold text-base mb-1">Cargar propiedad</h2>
+            <p class="text-xs text-slate-500 mb-4">El código interno se genera solo.</p>
+
+            <form id="formPropiedad" class="space-y-3">
+              <div>
+                <label class="text-xs font-medium text-slate-600">Título</label>
+                <input name="titulo" required placeholder="Ej: Casa 3 amb. con patio"
+                  class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none" />
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs font-medium text-slate-600">Tipo</label>
+                  <select name="tipo"
+                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary outline-none">
+                    <option>Casa</option><option>Departamento</option>
+                    <option>PH</option><option>Lote</option><option>Local</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-xs font-medium text-slate-600">Zona</label>
+                  <input name="zona" required placeholder="Ej: Centro"
+                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3">
+                <div class="col-span-2">
+                  <label class="text-xs font-medium text-slate-600">Precio</label>
+                  <input name="precio" type="number" min="0" required placeholder="0"
+                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" />
+                </div>
+                <div>
+                  <label class="text-xs font-medium text-slate-600">Moneda</label>
+                  <select name="moneda"
+                    class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary outline-none">
+                    <option>USD</option><option>ARS</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="text-xs font-medium text-slate-600">Dormitorios</label>
+                <input name="dormitorios" type="number" min="0" placeholder="Ej: 3"
+                  class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" />
+              </div>
+
+              <button type="submit"
+                class="w-full bg-primary hover:bg-indigo-700 text-white font-semibold text-sm rounded-lg py-2.5 transition-colors">
+                Guardar propiedad
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Lista de propiedades -->
+        <div class="lg:col-span-3">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="font-bold text-base">Cartera de propiedades</h2>
+            <span id="contadorProps" class="text-xs text-slate-500">0 cargadas</span>
+          </div>
+          <div id="listaPropiedades" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= -->
+    <!-- VISTA 2 · /LEADS (Tablero Kanban por temperatura)             -->
+    <!-- ============================================================= -->
+    <section id="vista-leads" class="vista hidden">
+
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+        <div>
+          <h2 class="font-bold text-lg">Base de clientes</h2>
+          <p class="text-xs text-slate-500">Arrastrá el foco según la urgencia de cada lead.</p>
+        </div>
+        <button onclick="abrirModalLead()"
+          class="bg-primary hover:bg-indigo-700 text-white font-semibold text-sm rounded-lg px-4 py-2.5 transition-colors">
+          + Agregar cliente
+        </button>
+      </div>
+
+      <!-- Las 3 columnas del tablero -->
+      <div class="grid md:grid-cols-3 gap-4">
+
+        <!-- Columna FRÍOS -->
+        <div class="bg-blue-50/60 rounded-2xl border border-blue-100 p-3">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <h3 class="font-bold text-sm text-frio flex items-center gap-1.5">🧊 Fríos</h3>
+            <span id="cuenta-frio" class="text-[11px] font-medium text-frio bg-blue-100 px-2 py-0.5 rounded-full">0</span>
+          </div>
+          <p class="text-[11px] text-blue-500/80 px-1 mb-3">Buscan a largo plazo, sin apuro.</p>
+          <div id="col-frio" class="space-y-3 min-h-[60px]"></div>
+        </div>
+
+        <!-- Columna TIBIOS -->
+        <div class="bg-amber-50/60 rounded-2xl border border-amber-100 p-3">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <h3 class="font-bold text-sm text-tibio flex items-center gap-1.5">🌤️ Tibios</h3>
+            <span id="cuenta-tibio" class="text-[11px] font-medium text-tibio bg-amber-100 px-2 py-0.5 rounded-full">0</span>
+          </div>
+          <p class="text-[11px] text-amber-600/80 px-1 mb-3">Activos, comparando opciones.</p>
+          <div id="col-tibio" class="space-y-3 min-h-[60px]"></div>
+        </div>
+
+        <!-- Columna CALIENTES -->
+        <div class="bg-rose-50/60 rounded-2xl border border-rose-100 p-3">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <h3 class="font-bold text-sm text-caliente flex items-center gap-1.5">🔥 Calientes</h3>
+            <span id="cuenta-caliente" class="text-[11px] font-medium text-caliente bg-rose-100 px-2 py-0.5 rounded-full">0</span>
+          </div>
+          <p class="text-[11px] text-rose-500/80 px-1 mb-3">Urgencia inmediata, listos para cerrar.</p>
+          <div id="col-caliente" class="space-y-3 min-h-[60px]"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  </div><!-- /#app -->
+
+  <!-- ============================================================= -->
+  <!-- MODAL · Alta / edición de cliente                             -->
+  <!-- ============================================================= -->
+  <div id="modalLead" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-ink/40 p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-base">Nuevo cliente</h3>
+        <button onclick="cerrarModalLead()" class="text-slate-400 hover:text-ink text-xl leading-none">&times;</button>
+      </div>
+
+      <form id="formLead" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-medium text-slate-600">Nombre</label>
+            <input name="nombre" required placeholder="Juan Pérez"
+              class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-600">Teléfono</label>
+            <input name="telefono" placeholder="11 5555 5555"
+              class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="text-xs font-medium text-slate-600">Presupuesto</label>
+            <input name="presupuesto" type="number" min="0" placeholder="0"
+              class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" />
+          </div>
+          <div>
+            <label class="text-xs font-medium text-slate-600">Moneda</label>
+            <select name="moneda"
+              class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary outline-none">
+              <option>USD</option><option>ARS</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-medium text-slate-600">Zona de interés</label>
+          <input name="zona" placeholder="Ej: Centro"
+            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-primary outline-none" />
+        </div>
+
+        <div>
+          <label class="text-xs font-medium text-slate-600">Propiedad vinculada (código o título)</label>
+          <select name="propiedad"
+            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary outline-none">
+            <option value="">— Sin vincular —</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-xs font-medium text-slate-600">Temperatura</label>
+          <select name="temperatura"
+            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-primary outline-none">
+            <option value="frio">🧊 Frío</option>
+            <option value="tibio">🌤️ Tibio</option>
+            <option value="caliente">🔥 Caliente</option>
+          </select>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-primary hover:bg-indigo-700 text-white font-semibold text-sm rounded-lg py-2.5 transition-colors">
+          Guardar cliente
+        </button>
+      </form>
+    </div>
+  </div>
+
+<script>
+/* =================================================================
+   MELOPROPIEDADES CRM · Lógica completa (JS nativo + Firebase)
+   ================================================================= */
+
+/* =================================================================
+   0) CONTROL DE ACCESO · Firebase Authentication + Firestore
+   ----------------------------------------------------------------
+   La autenticación la maneja Firebase (servidores de Google), no
+   este archivo. Las cuentas se CREAN desde la consola de Firebase
+   (Authentication → Users → Add user) y el registro público queda
+   deshabilitado: sin cuenta creada por el equipo, nadie entra.
+   Los datos de cada usuario se guardan en Firestore, accesibles solo
+   por su dueño según las Security Rules (ver instrucciones aparte).
+   El puente con Firebase está en el <script type="module"> de abajo,
+   expuesto como window.appFirebase.
+   ================================================================= */
+
+// --- Estado de sesión (lo completa Firebase al autenticar) ---
+let sesionUid   = null;          // UID del usuario de Firebase
+let sesionEmail = null;          // email logueado
+let propiedades = [];            // se hidratan desde Firestore al entrar
+let leads       = [];
+let credWasi    = {};            // { company, token } de esta cuenta
+
+/* Guarda TODO en Firestore, en el documento de la cuenta activa.
+   Es "fire-and-forget": no bloquea la interfaz. */
+function guardar() {
+  if (!sesionUid || !window.appFirebase) return;
+  window.appFirebase.guardar(sesionUid, {
+    propiedades: propiedades,
+    leads: leads,
+    wasi: credWasi,
+  }).catch(err => console.error('Error guardando en Firestore:', err));
+}
+
+/* Login con email + contraseña contra Firebase Auth.
+   El éxito lo detecta onCambioAuth(); acá solo manejamos errores. */
+async function intentarLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginClave').value;
+  const err   = document.getElementById('loginError');
+
+  if (!window.appFirebase) {
+    err.textContent = 'Firebase no está configurado todavía (ver config arriba del módulo).';
+    return;
+  }
+  if (!email || !pass) { err.textContent = 'Completá email y contraseña.'; return; }
+
+  err.textContent = 'Verificando...';
+  try {
+    await window.appFirebase.login(email, pass);
+    err.textContent = ''; // onCambioAuth se encarga de mostrar la app
+  } catch (e) {
+    // Traducimos los códigos de error más comunes de Firebase
+    const mapa = {
+      'auth/invalid-credential': 'Email o contraseña incorrectos.',
+      'auth/invalid-email': 'El email no es válido.',
+      'auth/user-not-found': 'Esta cuenta no existe o no fue habilitada.',
+      'auth/wrong-password': 'Contraseña incorrecta.',
+      'auth/too-many-requests': 'Demasiados intentos. Probá más tarde.',
+      'auth/user-disabled': 'Esta cuenta fue deshabilitada.',
+    };
+    err.textContent = mapa[e.code] || 'No se pudo iniciar sesión.';
+  }
+}
+
+/* Lo llama el puente de Firebase cuando cambia el estado de auth.
+   user = objeto de Firebase si hay sesión, o null si no la hay. */
+async function onCambioAuth(user) {
+  if (user) {
+    // --- Sesión activa ---
+    sesionUid   = user.uid;
+    sesionEmail = user.email;
+
+    // Traer los datos de esta cuenta desde Firestore
+    const data = await window.appFirebase.cargar(user.uid);
+    propiedades = data.propiedades || [];
+    leads       = data.leads       || [];
+    credWasi    = data.wasi        || {};
+
+    // Mostrar app, ocultar login
+    document.getElementById('pantallaLogin').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('sesionEmailLabel').textContent = user.email;
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginClave').value = '';
+
+    cambiarTab('panel');
+    cargarCredencialesWasi();
+    renderTodo();
+  } else {
+    // --- Sin sesión → mostrar login ---
+    sesionUid = null; sesionEmail = null;
+    propiedades = []; leads = []; credWasi = {};
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('pantallaLogin').classList.remove('hidden');
+  }
+}
+
+/* Cierra la sesión en Firebase. onCambioAuth volverá a mostrar el login. */
+async function cerrarSesion() {
+  if (!confirm('¿Cerrar sesión?')) return;
+  if (window.appFirebase) await window.appFirebase.logout();
+}
+
+// Permitir entrar con la tecla Enter desde el login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !document.getElementById('pantallaLogin').classList.contains('hidden')) {
+    intentarLogin();
+  }
+});
+
+/* Formatea un monto con separadores de miles y su moneda. */
+function fmt(monto, moneda) {
+  if (monto === '' || monto == null) return '—';
+  return (moneda || '') + ' ' + Number(monto).toLocaleString('es-AR');
+}
+
+/* =================================================================
+   1) NAVEGACIÓN POR PESTAÑAS
+   ================================================================= */
+function cambiarTab(tab) {
+  // Mostrar/ocultar la vista correspondiente
+  document.getElementById('vista-panel').classList.toggle('hidden', tab !== 'panel');
+  document.getElementById('vista-leads').classList.toggle('hidden', tab !== 'leads');
+
+  // Estilar el botón activo
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    const activo = btn.dataset.tab === tab;
+    btn.classList.toggle('border-white', activo);
+    btn.classList.toggle('text-white', activo);
+    btn.classList.toggle('border-transparent', !activo);
+    btn.classList.toggle('text-slate-400', !activo);
+  });
+}
+// Conectar los botones de pestaña
+document.querySelectorAll('.tab-btn').forEach(btn =>
+  btn.addEventListener('click', () => cambiarTab(btn.dataset.tab))
+);
+
+/* =================================================================
+   2) PANEL GENERAL · Propiedades
+   ================================================================= */
+
+// Genera un código interno único tipo MELO-001 (solo cuenta cargas manuales)
+function nuevoCodigo() {
+  const manuales = propiedades.filter(p => p.origen !== 'wasi').length;
+  const n = (manuales + 1).toString().padStart(3, '0');
+  return 'MELO-' + n;
+}
+
+// Alta de propiedad desde el formulario
+document.getElementById('formPropiedad').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  propiedades.push({
+    id: Date.now(),
+    codigo: nuevoCodigo(),
+    titulo: f.get('titulo'),
+    tipo: f.get('tipo'),
+    zona: f.get('zona').trim(),
+    precio: Number(f.get('precio')),
+    moneda: f.get('moneda'),
+    dormitorios: f.get('dormitorios') || '—',
+  });
+  e.target.reset();
+  guardar();
+  renderTodo();
+});
+
+// Eliminar una propiedad por id (compara como texto para soportar IDs de WASI)
+function borrarPropiedad(id) {
+  if (!confirm('¿Eliminar esta propiedad de la cartera?')) return;
+  propiedades = propiedades.filter(p => String(p.id) !== String(id));
+  guardar();
+  renderTodo();
+}
+
+// Dibuja la lista de propiedades
+function renderPropiedades() {
+  const cont = document.getElementById('listaPropiedades');
+  document.getElementById('contadorProps').textContent = propiedades.length + ' cargadas';
+
+  if (propiedades.length === 0) {
+    cont.innerHTML = `<div class="text-center text-sm text-slate-400 border border-dashed border-slate-300 rounded-xl py-10">
+      Todavía no cargaste propiedades. Usá el formulario para empezar.</div>`;
+    return;
+  }
+
+  cont.innerHTML = propiedades.map(p => `
+    <div class="bg-white rounded-xl border border-slate-200 p-4 flex items-start justify-between gap-3">
+      <div class="min-w-0">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
+          <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">${p.codigo}</span>
+          <span class="text-[11px] text-slate-400">${p.tipo}</span>
+          ${p.origen === 'wasi'
+            ? '<span class="text-[10px] font-bold text-[#194c9a] bg-blue-50 px-1.5 py-0.5 rounded">WASI</span>'
+            : ''}
+        </div>
+        <p class="font-semibold text-sm truncate">${p.titulo}</p>
+        <p class="text-xs text-slate-500 mt-0.5">📍 ${p.zona} · ${p.dormitorios} dorm.</p>
+        <p class="font-bold text-primary text-sm mt-1">${fmt(p.precio, p.moneda)}</p>
+      </div>
+      <button onclick="borrarPropiedad('${p.id}')"
+        class="text-slate-300 hover:text-caliente text-xs shrink-0">Eliminar</button>
+    </div>
+  `).join('');
+}
+
+/* =================================================================
+   3) MOTOR DE CRUCES INTELIGENTES
+   Avisa cuando el presupuesto de un cliente alcanza el precio
+   de una propiedad (misma moneda y, si hay zona, que coincida).
+   ================================================================= */
+function calcularCruces() {
+  const cruces = [];
+  leads.forEach(l => {
+    if (!l.presupuesto) return;
+    propiedades.forEach(p => {
+      const mismaMoneda = l.moneda === p.moneda;
+      const alcanza = Number(l.presupuesto) >= Number(p.precio);
+      // Si el cliente declaró zona, exigimos coincidencia; si no, no filtramos por zona
+      const zonaOk = !l.zona || l.zona.toLowerCase() === p.zona.toLowerCase();
+      if (mismaMoneda && alcanza && zonaOk) {
+        cruces.push({ lead: l, prop: p });
+      }
+    });
+  });
+  return cruces;
+}
+
+// Dibuja el panel de avisos de cruces
+function renderCruces() {
+  const zona = document.getElementById('zonaCruces');
+  const cruces = calcularCruces();
+
+  if (cruces.length === 0) { zona.innerHTML = ''; return; }
+
+  zona.innerHTML = `
+    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4">
+      <p class="font-bold text-sm text-emerald-700 mb-2">⚡ ${cruces.length} cruce(s) detectado(s)</p>
+      <div class="space-y-1.5">
+        ${cruces.map(c => `
+          <p class="text-xs text-emerald-800">
+            <strong>${c.lead.nombre}</strong> (presupuesto ${fmt(c.lead.presupuesto, c.lead.moneda)})
+            encaja con <strong>${c.prop.codigo}</strong> · ${c.prop.titulo}
+            (${fmt(c.prop.precio, c.prop.moneda)})
+          </p>`).join('')}
+      </div>
+    </div>`;
+}
+
+/* =================================================================
+   4) /LEADS · Tablero Kanban por temperatura
+   ================================================================= */
+
+// Abre el modal y refresca la lista de propiedades vinculables
+function abrirModalLead() {
+  const select = document.querySelector('#formLead select[name="propiedad"]');
+  select.innerHTML = '<option value="">— Sin vincular —</option>' +
+    propiedades.map(p => `<option value="${p.codigo}">${p.codigo} · ${p.titulo}</option>`).join('');
+  const m = document.getElementById('modalLead');
+  m.classList.remove('hidden');
+  m.classList.add('flex');
+}
+function cerrarModalLead() {
+  const m = document.getElementById('modalLead');
+  m.classList.add('hidden');
+  m.classList.remove('flex');
+  document.getElementById('formLead').reset();
+}
+
+// Alta de cliente
+document.getElementById('formLead').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = new FormData(e.target);
+  leads.push({
+    id: Date.now(),
+    nombre: f.get('nombre'),
+    telefono: f.get('telefono') || '—',
+    presupuesto: f.get('presupuesto') || '',
+    moneda: f.get('moneda'),
+    zona: (f.get('zona') || '').trim(),
+    propiedad: f.get('propiedad') || '',
+    temperatura: f.get('temperatura'),
+  });
+  guardar();
+  cerrarModalLead();
+  cambiarTab('leads');
+  renderTodo();
+});
+
+// Eliminar lead
+function borrarLead(id) {
+  if (!confirm('¿Eliminar este lead?')) return;
+  leads = leads.filter(l => l.id !== id);
+  guardar();
+  renderTodo();
+}
+
+/* Cambia la temperatura de forma cíclica:
+   frío → tibio → caliente → frío, sin reescribir la ficha. */
+function rotarTemperatura(id) {
+  const orden = ['frio', 'tibio', 'caliente'];
+  const l = leads.find(x => x.id === id);
+  if (!l) return;
+  const idx = orden.indexOf(l.temperatura);
+  l.temperatura = orden[(idx + 1) % orden.length];
+  guardar();
+  renderTodo();
+}
+
+// Estilos por temperatura para las tarjetas
+const estiloTemp = {
+  frio:     { borde: 'border-blue-200',  texto: 'text-frio',     emoji: '🧊' },
+  tibio:    { borde: 'border-amber-200', texto: 'text-tibio',    emoji: '🌤️' },
+  caliente: { borde: 'border-rose-200',  texto: 'text-caliente', emoji: '🔥' },
+};
+
+// Construye la tarjeta de un lead
+function tarjetaLead(l) {
+  const st = estiloTemp[l.temperatura];
+  return `
+    <div class="bg-white rounded-xl border ${st.borde} p-3.5 shadow-sm">
+      <div class="flex items-start justify-between gap-2">
+        <p class="font-bold text-sm truncate">${l.nombre}</p>
+        <span class="text-xs">${st.emoji}</span>
+      </div>
+      <div class="mt-2 space-y-1 text-xs text-slate-600">
+        <p>📞 ${l.telefono}</p>
+        <p>💰 ${fmt(l.presupuesto, l.moneda)}</p>
+        <p>📍 ${l.zona || 'Zona no indicada'}</p>
+        ${l.propiedad ? `<p class="text-primary font-medium">🔗 ${l.propiedad}</p>` : ''}
+      </div>
+      <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100">
+        <button onclick="rotarTemperatura(${l.id})"
+          class="flex-1 text-[11px] font-semibold ${st.texto} bg-slate-50 hover:bg-slate-100 rounded-lg py-1.5 transition-colors">
+          Cambiar estado
+        </button>
+        <button onclick="borrarLead(${l.id})"
+          class="text-[11px] font-semibold text-slate-400 hover:text-caliente bg-slate-50 hover:bg-rose-50 rounded-lg px-3 py-1.5 transition-colors">
+          Eliminar
+        </button>
+      </div>
+    </div>`;
+}
+
+// Reparte los leads en las 3 columnas del Kanban
+function renderLeads() {
+  const cols = { frio: [], tibio: [], caliente: [] };
+  leads.forEach(l => (cols[l.temperatura] || cols.frio).push(l));
+
+  ['frio', 'tibio', 'caliente'].forEach(t => {
+    const cont = document.getElementById('col-' + t);
+    document.getElementById('cuenta-' + t).textContent = cols[t].length;
+    cont.innerHTML = cols[t].length
+      ? cols[t].map(tarjetaLead).join('')
+      : `<p class="text-center text-[11px] text-slate-400 py-6">Sin clientes acá.</p>`;
+  });
+
+  document.getElementById('contadorLeads').textContent = leads.length;
+}
+
+/* =================================================================
+   4.5) INTEGRACIÓN CON LA API DE WASI
+   Endpoint: api.wasi.co/v1/property/search
+   Autenticación por query string: id_company + wasi_token
+   Respuesta: { total: N, "0": {...}, "1": {...}, ... }
+   ================================================================= */
+
+// Cargar credenciales de la cuenta activa en los inputs
+function cargarCredencialesWasi() {
+  document.getElementById('wasiCompany').value = credWasi.company || '';
+  document.getElementById('wasiToken').value   = credWasi.token   || '';
+  const est = document.getElementById('wasiEstado');
+  if (credWasi.company && credWasi.token) {
+    est.textContent = 'Credenciales guardadas';
+    est.className = 'text-[11px] text-emerald-600';
+  } else {
+    est.textContent = 'Sin conectar';
+    est.className = 'text-[11px] text-slate-400';
+  }
+}
+
+// Guardar credenciales WASI (quedan en Firestore, dentro de la cuenta)
+function guardarCredencialesWasi() {
+  const company = document.getElementById('wasiCompany').value.trim();
+  const token   = document.getElementById('wasiToken').value.trim();
+  if (!company || !token) { return msgWasi('Completá ID de compañía y token.', 'error'); }
+  credWasi = { company, token };
+  guardar();
+  document.getElementById('wasiEstado').textContent = 'Credenciales guardadas';
+  document.getElementById('wasiEstado').className = 'text-[11px] text-emerald-600';
+  msgWasi('Credenciales guardadas para esta cuenta.', 'ok');
+}
+
+// Plegar / desplegar el panel WASI
+function togglePanelWasi() {
+  const cuerpo = document.getElementById('cuerpoWasi');
+  const abierto = !cuerpo.classList.toggle('hidden');
+  document.getElementById('flechaWasi').textContent = abierto ? '▲' : '▼';
+}
+
+// Muestra un mensaje de estado en el panel WASI
+function msgWasi(texto, tipo) {
+  const colores = {
+    ok:    'text-emerald-600',
+    error: 'text-caliente',
+    info:  'text-slate-500',
+  };
+  document.getElementById('wasiMensaje').innerHTML =
+    `<span class="${colores[tipo] || colores.info}">${texto}</span>`;
+}
+
+/* Traduce una propiedad de WASI al modelo interno del CRM.
+   Conserva id_property para evitar duplicados al reimportar. */
+function mapearPropiedadWasi(w) {
+  // Si está en venta usamos precio de venta; si no, el de alquiler
+  const enVenta = String(w.for_sale) === 'true';
+  const precio  = Number(enVenta ? w.sale_price : w.rent_price) || 0;
+
+  return {
+    id: 'wasi-' + w.id_property,        // id interno estable
+    id_property: w.id_property,         // para deduplicar
+    origen: 'wasi',                     // marca de origen
+    codigo: w.reference && w.reference.trim() ? w.reference : 'WASI-' + w.id_property,
+    titulo: w.title || ('Propiedad ' + w.id_property),
+    tipo: w.property_type_label || 'Propiedad',
+    zona: w.zone_label || w.location_label || w.city_label || '—',
+    precio: precio,
+    moneda: w.iso_currency || 'USD',
+    dormitorios: w.bedrooms || '—',
+  };
+}
+
+/* Procesa el objeto JSON de WASI (claves numeradas + total)
+   y lo fusiona con la cartera, sin pisar las propiedades manuales
+   ni duplicar las que ya se habían importado. */
+function procesarRespuestaWasi(data) {
+  if (!data || typeof data.total === 'undefined') {
+    return msgWasi('La respuesta no tiene el formato esperado de WASI.', 'error');
+  }
+
+  // Las propiedades vienen en claves numéricas "0","1","2"...
+  const entrantes = Object.keys(data)
+    .filter(k => /^\d+$/.test(k))      // solo claves numéricas
+    .map(k => mapearPropiedadWasi(data[k]));
+
+  // Quitar de la cartera las versiones WASI previas (para refrescar)
+  propiedades = propiedades.filter(p => p.origen !== 'wasi');
+  // Sumar las recién importadas
+  propiedades = propiedades.concat(entrantes);
+
+  guardar();
+  renderTodo();
+  msgWasi(`✅ ${entrantes.length} propiedad(es) importada(s) desde WASI.`, 'ok');
+}
+
+/* Importación EN VIVO contra la API de WASI.
+   Nota: WASI está pensada para uso servidor→servidor; si el navegador
+   bloquea la llamada por CORS, se ofrece el pegado manual del JSON. */
+async function importarDesdeWasi() {
+  const company = document.getElementById('wasiCompany').value.trim();
+  const token   = document.getElementById('wasiToken').value.trim();
+  if (!company || !token) { return msgWasi('Cargá y guardá tus credenciales primero.', 'error'); }
+
+  const btn = document.getElementById('btnImportarWasi');
+  btn.disabled = true;
+  btn.textContent = 'Importando...';
+  msgWasi('Consultando WASI...', 'info');
+
+  // take=200 trae hasta 200 propiedades por llamada (paginación de WASI)
+  const url = `https://api.wasi.co/v1/property/search?id_company=${encodeURIComponent(company)}&wasi_token=${encodeURIComponent(token)}&take=200`;
+
+  try {
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    procesarRespuestaWasi(data);
+  } catch (err) {
+    // El caso típico acá es un bloqueo por CORS desde el navegador
+    msgWasi(
+      'No se pudo conectar directamente (probable bloqueo CORS del navegador). ' +
+      'Usá el pegado manual de abajo, o llamá a la API desde un pequeño backend/proxy propio.',
+      'error'
+    );
+    console.error('Error WASI:', err);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Importar propiedades de WASI';
+  }
+}
+
+// Importa pegando el JSON a mano (esquiva el bloqueo CORS)
+function importarJsonManual() {
+  const txt = document.getElementById('wasiJsonManual').value.trim();
+  if (!txt) return msgWasi('Pegá primero el JSON de WASI.', 'error');
+  try {
+    procesarRespuestaWasi(JSON.parse(txt));
+    document.getElementById('wasiJsonManual').value = '';
+  } catch (e) {
+    msgWasi('El texto pegado no es un JSON válido.', 'error');
+  }
+}
+
+/* =================================================================
+   5) RENDER GLOBAL · refresca todas las vistas a la vez
+   ================================================================= */
+function renderTodo() {
+  renderPropiedades();
+  renderLeads();
+  renderCruces();
+}
+
+// Cerrar el modal tocando el fondo oscuro
+document.getElementById('modalLead').addEventListener('click', e => {
+  if (e.target.id === 'modalLead') cerrarModalLead();
+});
+
+// --- Arranque ---
+// No mostramos nada hasta que Firebase resuelva el estado de sesión.
+// El puente de abajo llama a onCambioAuth() y eso decide login vs app.
+// Cerrar el modal de lead tocando el fondo ya quedó conectado arriba.
+</script>
+
+<!-- ============================================================= -->
+<!-- PUENTE CON FIREBASE (Auth + Firestore)                        -->
+<!-- Usa el SDK modular por CDN. Se ejecuta después del script de   -->
+<!-- arriba, así que las funciones globales (onCambioAuth, etc.)    -->
+<!-- ya existen cuando este módulo arranca.                         -->
+<!-- ============================================================= -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+    setPersistence, browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  /* =============================================================
+     👉 CONFIGURACIÓN DE TU PROYECTO FIREBASE
+     Pegá acá el objeto que te da la consola de Firebase en
+     Configuración del proyecto → Tus apps → SDK de Firebase.
+     (Estos valores son PÚBLICOS por diseño: no son un secreto.)
+     ============================================================= */
+  const firebaseConfig = {
+    apiKey: "AIzaSyCf8oPoDnenE6hVpOKy0XKLQlAdU6sqVKs",
+    authDomain: "crm-melop.firebaseapp.com",
+    projectId: "crm-melop",
+    storageBucket: "crm-melop.firebasestorage.app",
+    messagingSenderId: "186015766125",
+    appId: "1:186015766125:web:ce3e65dbcbbe434c169164"
+  };
+
+  // Si todavía no configuraste Firebase, avisamos en la pantalla de login
+  if (firebaseConfig.apiKey === "TU_API_KEY") {
+    document.getElementById('loginError').textContent =
+      'Falta configurar Firebase: pegá tu firebaseConfig en el módulo del HTML.';
+  } else {
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    // Mantener la sesión iniciada entre recargas
+    await setPersistence(auth, browserLocalPersistence);
+
+    /* Exponemos un puente mínimo para el script clásico de arriba. */
+    window.appFirebase = {
+      // Login con email + contraseña
+      login: (email, password) => signInWithEmailAndPassword(auth, email, password),
+      // Cerrar sesión
+      logout: () => signOut(auth),
+      // Leer el documento de datos del usuario
+      cargar: async (uid) => {
+        const snap = await getDoc(doc(db, 'usuarios', uid));
+        return snap.exists() ? snap.data() : {};
+      },
+      // Guardar (merge) el documento de datos del usuario
+      guardar: (uid, data) => setDoc(doc(db, 'usuarios', uid), data, { merge: true }),
+    };
+
+    // Cuando cambia el estado de auth, avisamos al script clásico
+    onAuthStateChanged(auth, (user) => {
+      if (typeof onCambioAuth === 'function') onCambioAuth(user);
+    });
+  }
+</script>
+</body>
+</html>
