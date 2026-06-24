@@ -801,35 +801,47 @@ function mapearClienteWasi(clienteWasi) {
 
 // Preview: valida el JSON y muestra qué se va a importar
 function previewWasiImport() {
+  alert('Preview ejecutándose...');
+  console.log('[WASI] Iniciando preview');
+  
   const txt = document.getElementById('wasiJsonImport').value.trim();
   const msg = document.getElementById('wasiImportMsg');
   
-  if (!txt) { msg.textContent = '❌ Pegá el JSON primero.'; return; }
+  if (!txt) { 
+    alert('JSON vacío');
+    msg.textContent = '❌ Pegá el JSON primero.'; 
+    return; 
+  }
+  
+  alert('JSON recibido, longitud: ' + txt.length);
   
   let data;
   try {
     data = JSON.parse(txt);
+    alert('JSON válido, total: ' + data.total);
   } catch (e) {
+    alert('JSON inválido: ' + e.message);
     msg.textContent = '❌ JSON inválido: ' + e.message;
     return;
   }
   
-  if (!data.total || typeof data.total !== 'number') {
-    msg.textContent = '❌ El JSON no tiene el formato esperado de WASI (falta "total").';
+  if (!data.total) {
+    alert('Falta "total" en el JSON');
+    msg.textContent = '❌ El JSON no tiene "total".';
     return;
   }
   
-  // Extraer clientes (vienen en claves numéricas)
   const clientesEntrantes = Object.keys(data)
     .filter(k => /^\d+$/.test(k))
     .map(k => mapearClienteWasi(data[k]));
   
+  alert('Clientes encontrados: ' + clientesEntrantes.length);
+  
   if (clientesEntrantes.length === 0) {
-    msg.textContent = '⚠️ No hay clientes para importar en este JSON.';
+    msg.textContent = '⚠️ No hay clientes para importar.';
     return;
   }
   
-  // Determinar estado de cada cliente (nuevo, duplicado, etc.)
   const preview = clientesEntrantes.map(c => {
     const yaExiste = leads.some(l => l.id_cliente_wasi === c.id_cliente_wasi);
     return {
@@ -839,19 +851,20 @@ function previewWasiImport() {
     };
   });
   
-  // Mostrar tabla
   const cont = document.getElementById('wasiPreviewTabla');
   cont.innerHTML = preview.map(c => `
     <tr class="${c.estado === 'Actualizar' ? 'bg-amber-50' : 'bg-emerald-50'}">
       <td class="px-3 py-2">${esc(c.nombre)}</td>
-      <td class="px-3 py-2">${esc(c.telefono)}</td>
-      <td class="px-3 py-2">${esc(c.email)}</td>
+      <td class="px-3 py-2">${esc(c.telefono || '—')}</td>
+      <td class="px-3 py-2">${esc(c.email || '—')}</td>
       <td class="px-3 py-2 font-semibold">${c.icon} ${c.estado}</td>
     </tr>
   `).join('');
   
   document.getElementById('wasiPreviewCont').classList.remove('hidden');
   msg.textContent = `✓ ${clientesEntrantes.length} cliente(s) listos para importar.`;
+  
+  alert('Preview completado');
 }
 
 // Importa los clientes del preview
