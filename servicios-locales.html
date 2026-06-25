@@ -773,39 +773,6 @@ body {
   </div>
 </section>
 
-<section class="section fade-up">
-  <div class="section-tag">Testimonios</div>
-  <h2 class="section-title">Lo que dicen otros profesionales</h2>
-  <p class="section-desc">Electricistas, plomeros y cerrajeros como vos.</p>
-
-  <div class="testimonials-grid">
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Pasé de 10 a 30 trabajos/mes. Google hace el marketing. Mejor inversión que hice."</p>
-      <div class="testimonial-author">Carlos</div>
-      <div class="testimonial-role">Electricista — Luján</div>
-    </div>
-
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Mis clientes me encuentran solos. Es como magia. El teléfono no deja de sonar."</p>
-      <div class="testimonial-author">Juan</div>
-      <div class="testimonial-role">Plomero — Moreno</div>
-    </div>
-
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Mejor que cualquier anuncio. Son clientes que NECESITAN mi servicio YA. No pierden tiempo."</p>
-      <div class="testimonial-author">Roberto</div>
-      <div class="testimonial-role">Cerrajero — Junín</div>
-    </div>
-  </div>
-
-  <div class="testimonials-badge">
-    <span>⭐ 5/5</span> — 45 opiniones verificadas
-  </div>
-</section>
-
 <section class="cta-section fade-up">
   <div class="cta-card">
     <h2>Tu Teléfono PODRÍA Sonar Constantemente</h2>
@@ -837,33 +804,8 @@ body {
           <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required>
         </div>
         <div class="form-group">
-          <label for="profesion">Profesión</label>
-          <select id="profesion" name="profesion" required>
-            <option value="">Seleccionar...</option>
-            <option value="electricista">Electricista</option>
-            <option value="plomero">Plomero</option>
-            <option value="cerrajero">Cerrajero</option>
-            <option value="gasista">Gasista</option>
-            <option value="otro">Otro</option>
-          </select>
-        </div>
-        <div class="form-group">
           <label for="telefono">Teléfono (WhatsApp)</label>
           <input type="tel" id="telefono" name="telefono" placeholder="Tu WhatsApp" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Tu email" required>
-        </div>
-        <div class="form-group">
-          <label for="trabajos">¿Cuántos trabajos/mes tienes?</label>
-          <select id="trabajos" name="trabajos" required>
-            <option value="">Seleccionar...</option>
-            <option value="menos10">Menos de 10</option>
-            <option value="10-20">10 a 20</option>
-            <option value="20-35">20 a 35</option>
-            <option value="mas35">35+</option>
-          </select>
         </div>
       </div>
 
@@ -893,12 +835,9 @@ function enviarFormulario(event) {
   event.preventDefault();
   
   const nombre = document.getElementById('nombre').value.trim();
-  const profesion = document.getElementById('profesion').value;
-  const trabajos = document.getElementById('trabajos').value;
   const telefono = document.getElementById('telefono').value.trim();
-  const email = document.getElementById('email').value.trim();
 
-  if (!nombre || !profesion || !trabajos || !telefono || !email) {
+  if (!nombre || !telefono) {
     alert('Por favor completá todos los campos.');
     return false;
   }
@@ -906,10 +845,7 @@ function enviarFormulario(event) {
   // 1. Enviar a Formspree
   const formData = new FormData();
   formData.append('nombre', nombre);
-  formData.append('profesion', profesion);
-  formData.append('trabajos', trabajos);
   formData.append('telefono', telefono);
-  formData.append('email', email);
 
   fetch('https://formspree.io/f/xbdvjyyl', {
     method: 'POST',
@@ -928,13 +864,9 @@ function enviarFormulario(event) {
         });
       }
 
-      // 3. Espera 1s y abre WhatsApp con mensaje corto
+      // 3. Espera 1s y abre WhatsApp
       setTimeout(() => {
-        const msg = encodeURIComponent(
-          `Hola, quiero análisis para mi negocio 🔧\n\n` +
-          `${nombre} - ${profesion}\n` +
-          `${trabajos} trabajos/mes`
-        );
+        const msg = encodeURIComponent(`Hola, soy ${nombre}. Quiero análisis gratuito 🔧`);
         window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
       }, 1000);
     } else {

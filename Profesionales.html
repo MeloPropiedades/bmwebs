@@ -772,39 +772,6 @@ body {
   </div>
 </section>
 
-<section class="section fade-up">
-  <div class="section-tag">Testimonios</div>
-  <h2 class="section-title">Lo que dicen otros profesionales</h2>
-  <p class="section-desc">Abogados, contadores y médicos que ya confían en su web.</p>
-
-  <div class="testimonials-grid">
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Mis clientes me encuentran solos en Google. No gasto en publicidad cara. El sitio trabaja para mí."</p>
-      <div class="testimonial-author">Dr. García</div>
-      <div class="testimonial-role">Abogado — CABA</div>
-    </div>
-
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"La confianza es todo en mi profesión. Mi sitio la genera antes de que hablemos. Clientes llegan seguros."</p>
-      <div class="testimonial-author">Lic. Martínez</div>
-      <div class="testimonial-role">Contador — La Plata</div>
-    </div>
-
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"ROI positivo desde el mes 1. Mejor inversión que hice. Es como tener una secretaria 24/7."</p>
-      <div class="testimonial-author">Dra. López</div>
-      <div class="testimonial-role">Médica — Junín</div>
-    </div>
-  </div>
-
-  <div class="testimonials-badge">
-    <span>⭐ 4.9/5</span> — 28 opiniones verificadas
-  </div>
-</section>
-
 <section class="cta-section fade-up">
   <div class="cta-card">
     <h2>Tu Competencia YA Tiene Sitio Web</h2>
@@ -836,35 +803,8 @@ body {
           <input type="text" id="nombre" name="nombre" placeholder="Ej: Dr. García" required>
         </div>
         <div class="form-group">
-          <label for="profesion">Profesión</label>
-          <select id="profesion" name="profesion" required>
-            <option value="" disabled selected>Seleccionar...</option>
-            <option value="abogado">Abogado/a</option>
-            <option value="contador">Contador/a</option>
-            <option value="medico">Médico/a</option>
-            <option value="psicologo">Psicólogo/a</option>
-            <option value="dentista">Dentista</option>
-            <option value="consultor">Consultor/a</option>
-            <option value="otro">Otro</option>
-          </select>
-        </div>
-        <div class="form-group">
           <label for="telefono">Teléfono (WhatsApp)</label>
           <input type="tel" id="telefono" name="telefono" placeholder="Ej: 2323 52-8908" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Ej: garcia@abogados.com" required>
-        </div>
-        <div class="form-group">
-          <label for="clientes">¿Cuántos clientes nuevos/mes tienes?</label>
-          <select id="clientes" name="clientes" required>
-            <option value="" disabled selected>Seleccionar...</option>
-            <option value="0-2">0 a 2</option>
-            <option value="2-5">2 a 5</option>
-            <option value="5-10">5 a 10</option>
-            <option value="10+">10+</option>
-          </select>
         </div>
       </div>
 
@@ -891,38 +831,53 @@ body {
 
 <script>
 function enviarFormulario(event) {
+  event.preventDefault();
+  
   const nombre = document.getElementById('nombre').value.trim();
-  const profesion = document.getElementById('profesion').value;
   const telefono = document.getElementById('telefono').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const clientes = document.getElementById('clientes').value;
 
-  if (!nombre || !profesion || !telefono || !email || !clientes) {
+  if (!nombre || !telefono) {
     alert('Por favor completá todos los campos.');
     return false;
   }
 
-  if (typeof fbq !== 'undefined') {
-    fbq('track', 'Lead', {
-      content_name: 'Consulta Servicios Profesionales',
-      content_category: 'landing_servicios'
-    });
-  }
+  // 1. Enviar a Formspree
+  const formData = new FormData();
+  formData.append('nombre', nombre);
+  formData.append('telefono', telefono);
 
-  setTimeout(() => {
-    const msg = encodeURIComponent(
-      `¡Hola! Quiero mi consulta gratis 📋\n\n` +
-      `👤 Nombre: ${nombre}\n` +
-      `💼 Profesión: ${profesion}\n` +
-      `📱 Teléfono: ${telefono}\n` +
-      `📧 Email: ${email}\n` +
-      `📊 Clientes/mes: ${clientes}\n\n` +
-      `Vi la publicidad de BM.WEBS y quiero mejorar mi presencia en Google.`
-    );
-    window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
-  }, 1000);
+  fetch('https://formspree.io/f/xbdvjyyl', {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok) {
+      // 2. Formspree OK → Dispara pixel de Lead
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'Lead', {
+          content_name: 'Consulta Servicios Profesionales',
+          content_category: 'landing_servicios',
+          value: nombre,
+          currency: 'ARS'
+        });
+      }
 
-  return true;
+      // 3. Espera 1s y abre WhatsApp
+      setTimeout(() => {
+        const msg = encodeURIComponent(`Hola, soy ${nombre}. Quiero consulta gratis 📋`);
+        window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
+      }, 1000);
+    } else {
+      alert('Error al enviar. Intenta de nuevo.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error de conexión. Intenta de nuevo.');
+  });
+
+  return false;
 }
 
 const observer = new IntersectionObserver((entries) => {

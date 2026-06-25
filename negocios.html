@@ -994,40 +994,6 @@ body {
   </div>
 </section>
 
-<section class="section fade-up">
-  <div class="section-tag" style="color:var(--accent);">
-    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:6px;"></span>
-    Testimonios
-  </div>
-  <h2 class="section-title">Lo que dicen nuestros clientes</h2>
-  <p class="section-desc">Negocios reales, resultados reales.</p>
-
-  <div class="testimonials-grid">
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Cambió mi negocio. Pasé de tener 5 citas a 40+ por mes. No puedo creer que no lo hice antes."</p>
-      <div class="testimonial-author">María</div>
-      <div class="testimonial-role">Salón de Belleza — Luján</div>
-    </div>
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Mi teléfono no deja de sonar. Los clientes me encuentran solos por Google. La mejor inversión."</p>
-      <div class="testimonial-author">Paula</div>
-      <div class="testimonial-role">Spa & Masajes — La Plata</div>
-    </div>
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"ROI en 1 mes. Se pagó sola la web. Ahora tengo lista de espera."</p>
-      <div class="testimonial-author">Gabriela</div>
-      <div class="testimonial-role">Centro de Estética — Junín</div>
-    </div>
-  </div>
-
-  <div class="testimonials-badge">
-    <span>⭐ 4.9/5</span> — 23 opiniones verificadas
-  </div>
-</section>
-
 <section class="cta-section fade-up">
   <div class="cta-card">
     <h2>¿Listo para +25 Reservas/Mes?</h2>
@@ -1056,20 +1022,6 @@ body {
         <div class="form-group">
           <label for="telefono">Teléfono (WhatsApp)</label>
           <input type="tel" id="telefono" name="telefono" placeholder="Ej: 2323 52-8908" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Correo electrónico</label>
-          <input type="email" id="email" name="email" placeholder="Ej: maria@gmail.com" required>
-        </div>
-        <div class="form-group">
-          <label for="citas">¿Cuántas citas/semana tenés hoy?</label>
-          <select id="citas" name="citas" required>
-            <option value="" disabled selected>Seleccionar...</option>
-            <option value="0-5">0 a 5 por semana</option>
-            <option value="5-10">5 a 10 por semana</option>
-            <option value="10-20">10 a 20 por semana</option>
-            <option value="20+">Más de 20 por semana</option>
-          </select>
         </div>
       </div>
 
@@ -1125,36 +1077,53 @@ document.addEventListener('keydown', (e) => {
 });
 
 function enviarFormulario(event) {
+  event.preventDefault();
+  
   const nombre = document.getElementById('nombre').value.trim();
   const telefono = document.getElementById('telefono').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const citas = document.getElementById('citas').value;
 
-  if (!nombre || !telefono || !email || !citas) {
+  if (!nombre || !telefono) {
     alert('Por favor completá todos los campos.');
     return false;
   }
 
-  if (typeof fbq !== 'undefined') {
-    fbq('track', 'Lead', {
-      content_name: 'Consulta Negocios',
-      content_category: 'landing_negocios'
-    });
-  }
+  // 1. Enviar a Formspree
+  const formData = new FormData();
+  formData.append('nombre', nombre);
+  formData.append('telefono', telefono);
 
-  setTimeout(() => {
-    const msg = encodeURIComponent(
-      `¡Hola! Quiero mi consulta gratis 🚀\n\n` +
-      `👤 Nombre: ${nombre}\n` +
-      `📱 Teléfono: ${telefono}\n` +
-      `📧 Email: ${email}\n` +
-      `📊 Citas/semana: ${citas}\n\n` +
-      `Vi la publicidad de BM.WEBS y quiero más info.`
-    );
-    window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
-  }, 1000);
+  fetch('https://formspree.io/f/xbdvjyyl', {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok) {
+      // 2. Formspree OK → Dispara pixel de Lead
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'Lead', {
+          content_name: 'Consulta Negocios',
+          content_category: 'landing_negocios',
+          value: nombre,
+          currency: 'ARS'
+        });
+      }
 
-  return true;
+      // 3. Espera 1s y abre WhatsApp
+      setTimeout(() => {
+        const msg = encodeURIComponent(`Hola, soy ${nombre}. Quiero consulta gratis 🚀`);
+        window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
+      }, 1000);
+    } else {
+      alert('Error al enviar. Intenta de nuevo.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error de conexión. Intenta de nuevo.');
+  });
+
+  return false;
 }
 
 const observer = new IntersectionObserver((entries) => {

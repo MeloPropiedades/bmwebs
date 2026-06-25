@@ -785,39 +785,6 @@ body {
   </div>
 </section>
 
-<section class="section fade-up">
-  <div class="section-tag">Testimonios</div>
-  <h2 class="section-title">Lo que dicen los dueños</h2>
-  <p class="section-desc">Restauranteros como vos que ya duplicaron sus ingresos.</p>
-
-  <div class="testimonials-grid">
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Es como tener un gerente 24/7 buscando clientes. Mi teléfono no deja de sonar."</p>
-      <div class="testimonial-author">Roberto</div>
-      <div class="testimonial-role">Restaurante — La Plata</div>
-    </div>
-
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Los clientes me encuentran solos. Google hace el trabajo. No gasto en publicidad."</p>
-      <div class="testimonial-author">Martín</div>
-      <div class="testimonial-role">Pizzería — Luján</div>
-    </div>
-
-    <div class="testimonial-card">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-text">"Mejor que anuncios en Facebook. Son clientes REALES que vienen a comer. Se pagó sola."</p>
-      <div class="testimonial-author">Claudia</div>
-      <div class="testimonial-role">Parrilla — Junín</div>
-    </div>
-  </div>
-
-  <div class="testimonials-badge">
-    <span>⭐ 5/5</span> — 31 opiniones verificadas
-  </div>
-</section>
-
 <section class="cta-section fade-up">
   <div class="cta-card">
     <h2>Cada Día Sin Web = 5 Clientes Perdidos</h2>
@@ -852,20 +819,6 @@ body {
           <label for="telefono">Teléfono (WhatsApp)</label>
           <input type="tel" id="telefono" name="telefono" placeholder="Ej: 2323 52-8908" required>
         </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="Ej: info@restaurante.com" required>
-        </div>
-        <div class="form-group">
-          <label for="clientes">¿Cuántos clientes/día tienes?</label>
-          <select id="clientes" name="clientes" required>
-            <option value="" disabled selected>Seleccionar...</option>
-            <option value="menos10">Menos de 10</option>
-            <option value="10-20">10 a 20</option>
-            <option value="20-40">20 a 40</option>
-            <option value="mas40">Más de 40</option>
-          </select>
-        </div>
       </div>
 
       <button type="submit" class="form-submit">Ver Auditoría Gratis →</button>
@@ -891,36 +844,53 @@ body {
 
 <script>
 function enviarFormulario(event) {
+  event.preventDefault();
+  
   const nombre = document.getElementById('nombre').value.trim();
   const telefono = document.getElementById('telefono').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const clientes = document.getElementById('clientes').value;
 
-  if (!nombre || !telefono || !email || !clientes) {
+  if (!nombre || !telefono) {
     alert('Por favor completá todos los campos.');
     return false;
   }
 
-  if (typeof fbq !== 'undefined') {
-    fbq('track', 'Lead', {
-      content_name: 'Auditoría Restaurantes',
-      content_category: 'landing_restaurantes'
-    });
-  }
+  // 1. Enviar a Formspree
+  const formData = new FormData();
+  formData.append('nombre', nombre);
+  formData.append('telefono', telefono);
 
-  setTimeout(() => {
-    const msg = encodeURIComponent(
-      `¡Hola! Quiero mi auditoría gratis 🍽️\n\n` +
-      `🏪 Restaurante: ${nombre}\n` +
-      `📱 Teléfono: ${telefono}\n` +
-      `📧 Email: ${email}\n` +
-      `👥 Clientes/día: ${clientes}\n\n` +
-      `Vi la publicidad de BM.WEBS y quiero saber cómo mejorar.`
-    );
-    window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
-  }, 1000);
+  fetch('https://formspree.io/f/xbdvjyyl', {
+    method: 'POST',
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok) {
+      // 2. Formspree OK → Dispara pixel de Lead
+      if (typeof fbq !== 'undefined') {
+        fbq('track', 'Lead', {
+          content_name: 'Auditoría Restaurantes',
+          content_category: 'landing_restaurantes',
+          value: nombre,
+          currency: 'ARS'
+        });
+      }
 
-  return true;
+      // 3. Espera 1s y abre WhatsApp
+      setTimeout(() => {
+        const msg = encodeURIComponent(`Hola, soy ${nombre}. Quiero auditoría gratis 🍽️`);
+        window.open(`https://wa.me/542323528908?text=${msg}`, '_blank');
+      }, 1000);
+    } else {
+      alert('Error al enviar. Intenta de nuevo.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Error de conexión. Intenta de nuevo.');
+  });
+
+  return false;
 }
 
 const observer = new IntersectionObserver((entries) => {
