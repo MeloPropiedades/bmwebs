@@ -133,42 +133,42 @@
       </div>
 
       <!-- Columnas del tablero -->
-      <div class="grid md:grid-cols-4 gap-4">
+      <div class="grid md:grid-cols-4 gap-3">
         <!-- SIN CLASIFICAR -->
-        <div class="bg-slate-100 rounded-2xl border border-slate-200 p-3">
-          <div class="flex items-center justify-between mb-1 px-1">
+        <div class="bg-slate-100 rounded-2xl border border-slate-200 p-4">
+          <div class="flex items-center justify-between mb-2 px-1">
             <h3 class="font-bold text-sm text-slate-500 flex items-center gap-1.5">🆕 Sin clasificar</h3>
             <span id="cuenta-sin" class="text-[11px] font-medium text-slate-500 bg-slate-200 px-2 py-0.5 rounded-full">0</span>
           </div>
           <p class="text-[11px] text-slate-400 px-1 mb-3">Asignales temperatura.</p>
-          <div id="col-sin" class="space-y-3 min-h-[60px]"></div>
+          <div id="col-sin" class="space-y-2 min-h-[60px]"></div>
         </div>
         <!-- FRÍOS -->
-        <div class="bg-blue-50/60 rounded-2xl border border-blue-100 p-3">
-          <div class="flex items-center justify-between mb-1 px-1">
+        <div class="bg-blue-50/60 rounded-2xl border border-blue-100 p-4">
+          <div class="flex items-center justify-between mb-2 px-1">
             <h3 class="font-bold text-sm text-frio flex items-center gap-1.5">🧊 Fríos</h3>
             <span id="cuenta-frio" class="text-[11px] font-medium text-frio bg-blue-100 px-2 py-0.5 rounded-full">0</span>
           </div>
           <p class="text-[11px] text-blue-500/80 px-1 mb-3">Largo plazo.</p>
-          <div id="col-frio" class="space-y-3 min-h-[60px]"></div>
+          <div id="col-frio" class="space-y-2 min-h-[60px]"></div>
         </div>
         <!-- TIBIOS -->
-        <div class="bg-amber-50/60 rounded-2xl border border-amber-100 p-3">
-          <div class="flex items-center justify-between mb-1 px-1">
+        <div class="bg-amber-50/60 rounded-2xl border border-amber-100 p-4">
+          <div class="flex items-center justify-between mb-2 px-1">
             <h3 class="font-bold text-sm text-tibio flex items-center gap-1.5">🌤️ Tibios</h3>
             <span id="cuenta-tibio" class="text-[11px] font-medium text-tibio bg-amber-100 px-2 py-0.5 rounded-full">0</span>
           </div>
           <p class="text-[11px] text-amber-600/80 px-1 mb-3">Comparando.</p>
-          <div id="col-tibio" class="space-y-3 min-h-[60px]"></div>
+          <div id="col-tibio" class="space-y-2 min-h-[60px]"></div>
         </div>
         <!-- CALIENTES -->
-        <div class="bg-rose-50/60 rounded-2xl border border-rose-100 p-3">
-          <div class="flex items-center justify-between mb-1 px-1">
+        <div class="bg-rose-50/60 rounded-2xl border border-rose-100 p-4">
+          <div class="flex items-center justify-between mb-2 px-1">
             <h3 class="font-bold text-sm text-caliente flex items-center gap-1.5">🔥 Calientes</h3>
             <span id="cuenta-caliente" class="text-[11px] font-medium text-caliente bg-rose-100 px-2 py-0.5 rounded-full">0</span>
           </div>
           <p class="text-[11px] text-rose-500/80 px-1 mb-3">Urgencia.</p>
-          <div id="col-caliente" class="space-y-3 min-h-[60px]"></div>
+          <div id="col-caliente" class="space-y-2 min-h-[60px]"></div>
         </div>
       </div>
     </section>
@@ -290,6 +290,74 @@
     </section>
   </main>
   </div><!-- /#app -->
+
+  <!-- ============================================================= -->
+  <!-- MODAL · Vista detallada de lead (solo lectura + acciones)      -->
+  <!-- ============================================================= -->
+  <div id="modalDetalles" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center bg-ink/40 p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-5 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-base" id="detallesNombre">Lead</h3>
+        <button onclick="cerrarDetalles()" class="text-slate-400 hover:text-ink text-xl leading-none">&times;</button>
+      </div>
+
+      <input type="hidden" id="detallesId" />
+
+      <div class="space-y-3 text-sm">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-slate-50 rounded-lg p-3">
+            <p class="text-[11px] text-slate-500 font-medium">Teléfono</p>
+            <p id="detallesTel" class="font-semibold text-slate-700 mt-1">—</p>
+          </div>
+          <div class="bg-slate-50 rounded-lg p-3">
+            <p class="text-[11px] text-slate-500 font-medium">Email</p>
+            <p id="detallesEmail" class="font-semibold text-slate-700 mt-1 truncate">—</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-slate-50 rounded-lg p-3">
+            <p class="text-[11px] text-slate-500 font-medium">Zona</p>
+            <p id="detallesZona" class="font-semibold text-slate-700 mt-1">—</p>
+          </div>
+          <div class="bg-slate-50 rounded-lg p-3">
+            <p class="text-[11px] text-slate-500 font-medium">Propiedad</p>
+            <p id="detallesCodigo" class="font-semibold text-primary mt-1">—</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 rounded-lg p-3">
+          <p class="text-[11px] text-slate-500 font-medium">Presupuesto</p>
+          <p id="detallesPresupuesto" class="font-semibold text-slate-700 mt-1">—</p>
+        </div>
+
+        <div class="bg-slate-50 rounded-lg p-3">
+          <p class="text-[11px] text-slate-500 font-medium">Próximo contacto</p>
+          <p id="detallesProximo" class="font-semibold text-slate-700 mt-1">—</p>
+        </div>
+
+        <div id="detallesNotasDiv" class="bg-slate-50 rounded-lg p-3">
+          <p class="text-[11px] text-slate-500 font-medium mb-2">Última nota</p>
+          <p id="detallesUltimaNota" class="text-xs text-slate-600">Sin notas</p>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mt-5 pt-4 border-t border-slate-100">
+        <button onclick="abrirModalEditarDesdeDetalles()"
+          class="flex-1 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg py-2 transition-colors">
+          ✏️ Editar
+        </button>
+        <button onclick="marcarContactadoDesdeDetalles()"
+          class="flex-1 text-sm font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg py-2 transition-colors">
+          ✓ Contacté
+        </button>
+        <button onclick="eliminarDesdeDetalles()"
+          class="text-sm font-semibold text-caliente bg-rose-50 hover:bg-rose-100 rounded-lg px-3 py-2 transition-colors">
+          🗑️
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================================================= -->
   <!-- MODAL · Alta / edición de lead                                -->
@@ -671,37 +739,76 @@ function textoContacto(l) {
   return `<span class="text-caliente font-semibold">Vencido hace ${-d} día(s)</span>`;
 }
 
+// Tarjeta ultra-compacta: solo nombre + emoji
 function tarjetaLead(l) {
   const st = estiloTemp[l.temperatura || 'sin'];
   const pend = estaPendiente(l);
-  const tel = (l.telefono || '').replace(/\D/g, '');
-  const wa = tel ? `https://wa.me/${tel}` : null;
-  const ultimaNota = (l.notas && l.notas.length) ? l.notas[l.notas.length - 1].texto : '';
-
   return `
-    <div class="bg-white rounded-xl border ${st.borde} ${pend ? 'pendiente' : ''} p-3.5 shadow-sm">
-      <div class="flex items-start justify-between gap-2">
-        <p class="font-bold text-sm truncate">${esc(l.nombre)}</p>
-        ${pend ? '<span class="text-[9px] font-bold text-white bg-caliente px-1.5 py-0.5 rounded-full shrink-0">PENDIENTE</span>' : ''}
+    <button onclick="abrirDetalles('${l.id}')"
+      class="w-full text-left bg-white rounded-lg border ${st.borde} ${pend ? 'pendiente' : ''} p-2.5 shadow-sm hover:shadow-md transition-shadow">
+      <div class="flex items-center justify-between gap-2">
+        <p class="font-semibold text-sm truncate">${esc(l.nombre)}</p>
+        <span class="text-base shrink-0">${estiloTemp[l.temperatura || 'sin'].emoji || '🆕'}</span>
       </div>
-      <div class="mt-2 space-y-1 text-xs text-slate-600">
-        ${l.telefono ? `<p>📞 ${esc(l.telefono)}</p>` : ''}
-        ${l.email ? `<p>📧 ${esc(l.email)}</p>` : ''}
-        ${l.presupuesto ? `<p>💰 ${fmt(l.presupuesto, l.moneda)}</p>` : ''}
-        ${l.zona ? `<p>📍 ${esc(l.zona)}</p>` : ''}
-        ${l.codigoPropiedad ? `<p class="text-primary font-medium">🏠 ${esc(l.codigoPropiedad)}</p>` : ''}
-      </div>
-      <p class="text-[11px] mt-2">${textoContacto(l)}</p>
-      ${ultimaNota ? `<p class="text-[11px] text-slate-400 mt-1 truncate">📝 ${esc(ultimaNota)}</p>` : ''}
-      <div class="flex gap-1.5 mt-3 pt-3 border-t border-slate-100">
-        ${wa ? `<a href="${wa}" target="_blank" rel="noopener"
-          class="flex-1 text-center text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg py-1.5 transition-colors">WhatsApp</a>` : ''}
-        <button onclick="marcarContactado('${l.id}')"
-          class="flex-1 text-[11px] font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg py-1.5 transition-colors">Contacté</button>
-        <button onclick="abrirModalLead('${l.id}')"
-          class="text-[11px] font-semibold text-slate-500 hover:text-ink bg-slate-100 hover:bg-slate-200 rounded-lg px-3 py-1.5 transition-colors">Editar</button>
-      </div>
-    </div>`;
+      ${pend ? '<p class="text-[10px] text-caliente font-bold mt-1">PENDIENTE</p>' : ''}
+    </button>`;
+}
+
+// Abre el modal de detalles
+function abrirDetalles(id) {
+  const l = leads.find(x => x.id === id);
+  if (!l) return;
+  
+  document.getElementById('detallesId').value = id;
+  document.getElementById('detallesNombre').textContent = l.nombre;
+  document.getElementById('detallesTel').textContent = l.telefono || '—';
+  document.getElementById('detallesEmail').textContent = l.email || '—';
+  document.getElementById('detallesZona').textContent = l.zona || '—';
+  document.getElementById('detallesCodigo').textContent = l.codigoPropiedad || '—';
+  document.getElementById('detallesPresupuesto').textContent = fmt(l.presupuesto, l.moneda) || '—';
+  
+  const d = diasParaContacto(l);
+  let proximoTexto = '—';
+  if (d !== null) {
+    if (d > 0)  proximoTexto = `en ${d} día(s)`;
+    if (d === 0) proximoTexto = 'Hoy';
+    if (d < 0)  proximoTexto = `hace ${-d} día(s)`;
+  }
+  document.getElementById('detallesProximo').textContent = proximoTexto;
+  
+  const ultimaNota = (l.notas && l.notas.length) ? l.notas[l.notas.length - 1].texto : 'Sin notas';
+  document.getElementById('detallesUltimaNota').textContent = ultimaNota;
+  
+  const m = document.getElementById('modalDetalles');
+  m.classList.remove('hidden');
+  m.classList.add('flex');
+}
+
+function cerrarDetalles() {
+  const m = document.getElementById('modalDetalles');
+  m.classList.add('hidden');
+  m.classList.remove('flex');
+}
+
+function abrirModalEditarDesdeDetalles() {
+  const id = document.getElementById('detallesId').value;
+  cerrarDetalles();
+  abrirModalLead(id);
+}
+
+function marcarContactadoDesdeDetalles() {
+  const id = document.getElementById('detallesId').value;
+  marcarContactado(id);
+  cerrarDetalles();
+}
+
+function eliminarDesdeDetalles() {
+  const id = document.getElementById('detallesId').value;
+  cerrarDetalles();
+  if (!confirm('¿Eliminar este lead definitivamente?')) return;
+  leads = leads.filter(x => x.id !== id);
+  guardar();
+  renderTodo();
 }
 
 function renderLeads() {
@@ -801,38 +908,50 @@ function mapearClienteWasi(clienteWasi) {
 
 // Importa directamente (sin preview)
 function previewWasiImport() {
+  console.log('[WASI] 1. Iniciando preview');
   const txt = document.getElementById('wasiJsonImport').value.trim();
+  console.log('[WASI] 2. JSON length:', txt.length);
   
   if (!txt) { 
+    console.log('[WASI] ERROR: JSON vacío');
     alert('❌ Pegá el JSON primero'); 
     return; 
   }
   
+  console.log('[WASI] 3. Parseando JSON...');
   let data;
   try {
     data = JSON.parse(txt);
+    console.log('[WASI] 4. JSON parseado OK, total:', data.total);
   } catch (e) {
+    console.log('[WASI] ERROR parseando:', e.message);
     alert('❌ JSON inválido: ' + e.message);
     return;
   }
   
   if (!data.total) {
+    console.log('[WASI] ERROR: Falta "total"');
     alert('❌ Falta "total" en el JSON');
     return;
   }
   
+  console.log('[WASI] 5. Extrayendo clientes...');
   const clientesEntrantes = Object.keys(data)
     .filter(k => /^\d+$/.test(k))
     .map(k => mapearClienteWasi(data[k]));
   
+  console.log('[WASI] 6. Clientes extraídos:', clientesEntrantes.length);
+  
   if (clientesEntrantes.length === 0) {
+    console.log('[WASI] ERROR: Sin clientes');
     alert('⚠️ No hay clientes para importar');
     return;
   }
   
+  console.log('[WASI] 7. Procesando clientes...');
   let nuevos = 0, actualizados = 0;
   
-  clientesEntrantes.forEach(c => {
+  clientesEntrantes.forEach((c, i) => {
     c.id = 'lead-' + c.id_cliente_wasi + '-' + Date.now();
     c.creado = Date.now();
     c.ultimoContacto = null;
@@ -845,17 +964,25 @@ function previewWasiImport() {
       existente.email = c.email;
       existente.zona = c.zona;
       actualizados++;
+      console.log('[WASI]   Cliente', i+1, 'actualizado:', c.nombre);
     } else {
       leads.push(c);
       nuevos++;
+      console.log('[WASI]   Cliente', i+1, 'nuevo:', c.nombre);
     }
   });
   
+  console.log('[WASI] 8. Guardando en Firestore...');
   guardar();
+  console.log('[WASI] 9. Limpiando textarea...');
   document.getElementById('wasiJsonImport').value = '';
   
+  console.log('[WASI] 10. Mostrando alert...');
   alert('✅ Importado: ' + nuevos + ' nuevo(s), ' + actualizados + ' actualizado(s).');
+  
+  console.log('[WASI] 11. Renderizando UI...');
   renderTodo();
+  console.log('[WASI] ✅ COMPLETADO');
 }
 
 // Importa los clientes del preview
