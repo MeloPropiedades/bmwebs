@@ -799,35 +799,25 @@ function mapearClienteWasi(clienteWasi) {
   };
 }
 
-// Preview: valida el JSON y muestra qué se va a importar
+// Importa directamente (sin preview)
 function previewWasiImport() {
-  alert('Preview ejecutándose...');
-  console.log('[WASI] Iniciando preview');
-  
   const txt = document.getElementById('wasiJsonImport').value.trim();
-  const msg = document.getElementById('wasiImportMsg');
   
   if (!txt) { 
-    alert('JSON vacío');
-    msg.textContent = '❌ Pegá el JSON primero.'; 
+    alert('❌ Pegá el JSON primero'); 
     return; 
   }
-  
-  alert('JSON recibido, longitud: ' + txt.length);
   
   let data;
   try {
     data = JSON.parse(txt);
-    alert('JSON válido, total: ' + data.total);
   } catch (e) {
-    alert('JSON inválido: ' + e.message);
-    msg.textContent = '❌ JSON inválido: ' + e.message;
+    alert('❌ JSON inválido: ' + e.message);
     return;
   }
   
   if (!data.total) {
-    alert('Falta "total" en el JSON');
-    msg.textContent = '❌ El JSON no tiene "total".';
+    alert('❌ Falta "total" en el JSON');
     return;
   }
   
@@ -835,36 +825,37 @@ function previewWasiImport() {
     .filter(k => /^\d+$/.test(k))
     .map(k => mapearClienteWasi(data[k]));
   
-  alert('Clientes encontrados: ' + clientesEntrantes.length);
-  
   if (clientesEntrantes.length === 0) {
-    msg.textContent = '⚠️ No hay clientes para importar.';
+    alert('⚠️ No hay clientes para importar');
     return;
   }
   
-  const preview = clientesEntrantes.map(c => {
-    const yaExiste = leads.some(l => l.id_cliente_wasi === c.id_cliente_wasi);
-    return {
-      ...c,
-      estado: yaExiste ? 'Actualizar' : 'Nuevo',
-      icon: yaExiste ? '🔄' : '🆕',
-    };
+  let nuevos = 0, actualizados = 0;
+  
+  clientesEntrantes.forEach(c => {
+    c.id = 'lead-' + c.id_cliente_wasi + '-' + Date.now();
+    c.creado = Date.now();
+    c.ultimoContacto = null;
+    c.notas = [];
+    
+    const existente = leads.find(l => l.id_cliente_wasi === c.id_cliente_wasi);
+    if (existente) {
+      existente.nombre = c.nombre;
+      existente.telefono = c.telefono;
+      existente.email = c.email;
+      existente.zona = c.zona;
+      actualizados++;
+    } else {
+      leads.push(c);
+      nuevos++;
+    }
   });
   
-  const cont = document.getElementById('wasiPreviewTabla');
-  cont.innerHTML = preview.map(c => `
-    <tr class="${c.estado === 'Actualizar' ? 'bg-amber-50' : 'bg-emerald-50'}">
-      <td class="px-3 py-2">${esc(c.nombre)}</td>
-      <td class="px-3 py-2">${esc(c.telefono || '—')}</td>
-      <td class="px-3 py-2">${esc(c.email || '—')}</td>
-      <td class="px-3 py-2 font-semibold">${c.icon} ${c.estado}</td>
-    </tr>
-  `).join('');
+  guardar();
+  document.getElementById('wasiJsonImport').value = '';
   
-  document.getElementById('wasiPreviewCont').classList.remove('hidden');
-  msg.textContent = `✓ ${clientesEntrantes.length} cliente(s) listos para importar.`;
-  
-  alert('Preview completado');
+  alert('✅ Importado: ' + nuevos + ' nuevo(s), ' + actualizados + ' actualizado(s).');
+  renderTodo();
 }
 
 // Importa los clientes del preview
